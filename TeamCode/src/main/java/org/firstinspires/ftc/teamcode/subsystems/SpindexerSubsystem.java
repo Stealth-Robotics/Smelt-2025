@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,10 +14,7 @@ import org.stealthrobotics.library.StealthSubsystem;
 import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 import static java.lang.Math.abs;
 
-import java.util.Collections;
-import java.util.Set;
-
-public class Spindexer extends StealthSubsystem {
+public class SpindexerSubsystem extends StealthSubsystem {
     private final RevColorSensorV3 colorSensor;
     private final CRServo servo1;
     private final CRServo servo2;
@@ -32,7 +25,7 @@ public class Spindexer extends StealthSubsystem {
 
     private boolean isMoving = false;
 
-    public Spindexer(HardwareMap hardwareMap) {
+    public SpindexerSubsystem(HardwareMap hardwareMap) {
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         servo1 = hardwareMap.get(CRServo.class, "spinServo1");
         servo2 = hardwareMap.get(CRServo.class, "spinServo2");
