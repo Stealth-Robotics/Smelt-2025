@@ -4,7 +4,9 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -14,6 +16,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Artifact;
 import org.stealthrobotics.library.StealthSubsystem;
 import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
+import static java.lang.Math.abs;
+
+import java.util.Collections;
+import java.util.Set;
 
 public class Spindexer extends StealthSubsystem {
     private final RevColorSensorV3 colorSensor;
@@ -22,8 +28,7 @@ public class Spindexer extends StealthSubsystem {
 
     private int currentIndex = 0;
 
-    //TODO: Figure Out Starting Configuration
-    private final Artifact[] spindexer = {Artifact.GREEN, Artifact.PURPLE, Artifact.GREEN};
+    private final Artifact[] spindexer = {Artifact.PURPLE, Artifact.PURPLE, Artifact.GREEN};
 
     private boolean isMoving = false;
 
@@ -33,18 +38,21 @@ public class Spindexer extends StealthSubsystem {
         servo2 = hardwareMap.get(CRServo.class, "spinServo2");
     }
 
-    public Command rotateToSlot(int desiredIndex) {
+    public void rotateToSlot(int desiredIndex) {
         boolean shortestIsLeft = ((currentIndex - desiredIndex) % 3 < (currentIndex + desiredIndex) % 3);
+        int rotations = abs(currentIndex - desiredIndex);
 
-        return new ConditionalCommand(
-                rotateToTheLeft(desiredIndex),
-                rotateToTheRight(desiredIndex),
-                () -> shortestIsLeft).andThen(new InstantCommand(() -> currentIndex = desiredIndex)
-        );
+        currentIndex = desiredIndex;
+
+        if (shortestIsLeft)
+            for (int i = rotations; i > 0; i--)
+                rotateLeft();
+        else
+            for (int i = rotations; i > 0; i--)
+                rotateRight();
     }
 
-    //TODO: Set Servo Directions
-    private Command rotateToTheLeft(int index) {
+    private Command rotateLeft() {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> servo1.setPower(-1)),
@@ -54,8 +62,7 @@ public class Spindexer extends StealthSubsystem {
         );
     }
 
-    //TODO: Set Servo Directions
-    private Command rotateToTheRight(int index) {
+    private Command rotateRight() {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> servo1.setPower(1)),
@@ -65,7 +72,7 @@ public class Spindexer extends StealthSubsystem {
         );
     }
 
-    //Use color + distance color sensor measurement to accurately detect when a slot if full
+    //Use color + distance color sensor measurement to accurately detect when a slot is full
     private boolean detectedGamePiece() {
         return true;
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -9,20 +10,22 @@ import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
 public class ShooterSubsystem extends StealthSubsystem {
     private final DcMotorEx shooterMotor;
-    private final Servo pusherServo;
-    private final double CLOSED_PUSHER = 0;
-    private final double OPEN_PUSHER = 1;
+    private final ServoEx pusherServo;
 
-    public ShooterSubsystem(HardwareMap hardwareMap){
+    //TODO: Tune servo position constants
+    private final double PUSHER_CLOSED_POSITION = 0.0;
+    private final double PUSHER_OPEN_POSITION = 1.0;
+
+    public ShooterSubsystem(HardwareMap hardwareMap) {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
-        pusherServo = hardwareMap.get(Servo.class, "pusherServo");
+        pusherServo = hardwareMap.get(ServoEx.class, "pusherServo");
     }
 
-    public void setPower(double power){
+    private void setPower(double power) {
         shooterMotor.setPower(power);
     }
 
-    public void setPusher(double pos){
+    private void setPusher(double pos) {
         pusherServo.setPosition(pos);
     }
 }
