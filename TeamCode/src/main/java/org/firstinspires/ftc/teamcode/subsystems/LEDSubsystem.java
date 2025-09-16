@@ -1,4 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-public class LEDSubsystem {
+import org.stealthrobotics.library.StealthSubsystem;
+
+public class LEDSubsystem extends StealthSubsystem {
+
 }
