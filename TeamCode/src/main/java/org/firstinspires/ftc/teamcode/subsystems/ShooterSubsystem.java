@@ -25,7 +25,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         shooterMotor.setPower(power);
     }
 
-    private void setPusher(double pos) {
+    public void setPusher(double pos){
         pusherServo.setPosition(pos);
     }
 }
