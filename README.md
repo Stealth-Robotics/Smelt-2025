@@ -1,7 +1,6 @@
-# <span style="color: blue;">**Only the best programming team in existence🖥️🖥️🖥️**</span>
+# <span style="color: blue;">**Better than Ian and Marco 🫠**</span>
 
 ### <ins>Members</ins>
-- **Marco The Goat**
-- **Ian The Goat**
+- **Ivan The Goat**
 
 ~~Remember to put the brackets on the same line as the method header!!!~~
