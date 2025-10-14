@@ -10,13 +10,17 @@ import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
 public class ShooterSubsystem extends StealthSubsystem {
     private final DcMotorEx shooterMotor;
-
+    private final Servo hoodServo;
 
     public ShooterSubsystem(HardwareMap hardwareMap) {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+        hoodServo = hardwareMap.get(Servo.class, "hoodServo");
     }
 
     private void setPower(double power) {
         shooterMotor.setPower(power);
+    }
+    private void setPosition(double position) {
+        hoodServo.setPosition(position);
     }
 }
