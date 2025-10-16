@@ -17,10 +17,10 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
     }
 
-    private void setPower(double power) {
+    public void setPower(double power) {
         shooterMotor.setPower(power);
     }
-    private void setPosition(double position) {
+    public void setPosition(double position) {
         hoodServo.setPosition(position);
     }
 }
