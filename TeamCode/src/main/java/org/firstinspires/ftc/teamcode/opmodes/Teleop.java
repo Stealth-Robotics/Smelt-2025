@@ -2,13 +2,18 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.commands.beltCommand;
+import org.firstinspires.ftc.teamcode.commands.hoodCommand;
+import org.firstinspires.ftc.teamcode.commands.intakeCommand;
+import org.firstinspires.ftc.teamcode.commands.shootCommand;
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
-import org.stealthrobotics.library.Alliance;
 import org.stealthrobotics.library.opmodes.StealthOpMode;
 
 @TeleOp (name = "TeleOp")
@@ -36,6 +41,11 @@ public class Teleop extends StealthOpMode {
 
         register(drive);
         drive.setDefaultCommand(drive.driveTeleop(() -> driveGamepad.getLeftX(), () -> driveGamepad.getLeftY(), () -> driveGamepad.getRightX()));
+
+        driveGamepad.getGamepadButton(GamepadKeys.Button.A).whenPressed(new beltCommand(beltSubsystem));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(new hoodCommand(shooterSubsystem));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.X).whenPressed(new intakeCommand(intakeSubsystem));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(new shootCommand(shooterSubsystem));
     }
 
 
