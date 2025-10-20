@@ -32,21 +32,22 @@ public class Teleop extends StealthOpMode {
     @Override
     public void initialize() {
 
-        beltSubsystem = new BeltSubsystem(hardwareMap);
-        intakeSubsystem = new IntakeSubsystem(hardwareMap);
-        shooterSubsystem = new ShooterSubsystem(hardwareMap);
+        //beltSubsystem = new BeltSubsystem(hardwareMap);
+        //intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        //shooterSubsystem = new ShooterSubsystem(hardwareMap);
 
         driveGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
 
         register(drive);
         drive.setDefaultCommand(drive.driveTeleop(() -> driveGamepad.getLeftX(), () -> driveGamepad.getLeftY(), () -> driveGamepad.getRightX()));
-
-        driveGamepad.getGamepadButton(GamepadKeys.Button.A).whenPressed(new beltCommand(beltSubsystem));
-        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(new hoodCommand(shooterSubsystem));
-        driveGamepad.getGamepadButton(GamepadKeys.Button.X).whenPressed(new intakeCommand(intakeSubsystem));
-        driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(new shootCommand(shooterSubsystem));
+        configureBindings();
     }
-
+    private void configureBindings() {
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.A).whenPressed(new beltCommand(beltSubsystem));
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(new hoodCommand(shooterSubsystem));
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.X).whenPressed(new intakeCommand(intakeSubsystem));
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(new shootCommand(shooterSubsystem));
+    }
 
 }
