@@ -25,13 +25,19 @@ public class DriveSubsystem extends StealthSubsystem {
 
     private final Follower follower;
     private double headingOffset = 0.0;
+    private final CameraSubsystem cameraSubsystem;
 
+    public static double AUTO_AIM_TOLERANCE = 0.3;
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.follower = Constants.createFollower(hardwareMap);
+        this.cameraSubsystem = new CameraSubsystem(hardwareMap);
         follower.setStartingPose(new Pose(0, 0, 0));
         follower.startTeleOpDrive();
     }
 
+    public void update(){
+        cameraSubsystem.update();
+    }
     public void setHeading(double headingOffset) {
         this.headingOffset = headingOffset;
     }
@@ -52,13 +58,29 @@ public class DriveSubsystem extends StealthSubsystem {
     }
 
 
-    private void drive(double x, double y, double rot, boolean isRobotCentric) {
+    private void drive(double x, double y, double rot, boolean isRobotCentric, boolean isAutoAim) {
+        if (isAutoAim) {
+            cameraSubsystem.getLastResult(); // Force an update of the Limelight data.
+            Pose llPose = cameraSubsystem.getAvgTargetPose(50); // Get averaged target position.
+            if (llPose != null) {
+                // Calculate the turn power needed to center the target.
+                //TODO: double output = getScaledTxOutput(llPose.getX(), AUTO_AIM_TOLERANCE);
+                //TODO: shooterSys.setTargetRpmFromDistance(LimelightSubsystem.calcGoalDistanceByTy(llPose.getY()));
+                //The output is applied to the rotation power (note: may need to be inverted).
+                //TODO: turn = -output;
+
+            } else {
+                // If the target is lost, reset the PID controller to prevent integral windup.
+                //headingController.reset();
+            }
+        }
+
         follower.setTeleOpDrive(x, y, rot,  isRobotCentric);
     }
     //TODO: make field centric toggleable
-    public Command driveTeleop(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, BooleanSupplier isRobotCentric) {
+    public Command driveTeleop(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot, BooleanSupplier isRobotCentric, BooleanSupplier isAutoAim) {
         telemetry.addData("Driving", x.getAsDouble());
-        return this.run(() -> drive(x.getAsDouble(), y.getAsDouble(), -rot.getAsDouble(), isRobotCentric.getAsBoolean()));
+        return this.run(() -> drive(x.getAsDouble(), y.getAsDouble(), -rot.getAsDouble(), isRobotCentric.getAsBoolean(), isAutoAim.getAsBoolean()));
     }
 
     @Override
