@@ -4,13 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.commands.beltCommand;
-import org.firstinspires.ftc.teamcode.commands.hoodCommand;
-import org.firstinspires.ftc.teamcode.commands.intakeCommand;
 import org.firstinspires.ftc.teamcode.commands.shootCommand;
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
@@ -36,7 +31,7 @@ public class Teleop extends StealthOpMode {
 
         //beltSubsystem = new BeltSubsystem(hardwareMap);
         //intakeSubsystem = new IntakeSubsystem(hardwareMap);
-        //shooterSubsystem = new ShooterSubsystem(hardwareMap);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap);
 
 
         drive = new DriveSubsystem(hardwareMap, telemetry);
@@ -63,8 +58,10 @@ public class Teleop extends StealthOpMode {
 
         //driveGamepad.getGamepadButton(GamepadKeys.Button.A).whenPressed(new beltCommand(beltSubsystem));
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(new hoodCommand(shooterSubsystem));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPower(1));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenReleased(() -> shooterSubsystem.stop());
         //driveGamepad.getGamepadButton(GamepadKeys.Button.X).whenPressed(new intakeCommand(intakeSubsystem));
-        driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(()-> drive.resetHeading());
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(()-> drive.resetHeading());
     }
 
 }
