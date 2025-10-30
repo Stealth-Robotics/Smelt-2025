@@ -46,7 +46,7 @@ public class Teleop extends StealthOpMode {
         //negative for strafing because some motors are reversed (testbot)
         drive.setDefaultCommand(drive.driveTeleop(
                 () -> driveGamepad.getLeftY(),
-                () -> -driveGamepad.getRightX(),
+                () -> driveGamepad.getRightX(),
                 () -> driveGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - driveGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).get(),
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));

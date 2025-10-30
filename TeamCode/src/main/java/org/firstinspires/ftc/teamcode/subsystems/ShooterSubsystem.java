@@ -20,11 +20,11 @@ public class ShooterSubsystem extends StealthSubsystem {
     }
 
     public void setPower(double power) {
-        shooterMotor1.setPower(-power);
+        //shooterMotor1.setPower(-power);
         shooterMotor2.setPower(-power);
     }
     public void stop (){
-        shooterMotor1.setPower(0);
+        //shooterMotor1.setPower(0);
         shooterMotor2.setPower(0);
     }
     public void setPosition(double position) {
