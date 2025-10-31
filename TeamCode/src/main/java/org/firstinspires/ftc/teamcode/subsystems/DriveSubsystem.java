@@ -78,9 +78,10 @@ public class DriveSubsystem extends StealthSubsystem {
         follower.setTeleOpDrive(x, y, rot,  isRobotCentric);
     }
     //TODO: make field centric toggleable
+    //x is reversed
     public Command driveTeleop(DoubleSupplier y, DoubleSupplier x, DoubleSupplier rot, BooleanSupplier isRobotCentric, BooleanSupplier isAutoAim) {
         telemetry.addData("Driving", y.getAsDouble());
-        return this.run(() -> drive(y.getAsDouble(), x.getAsDouble(), rot.getAsDouble(), isRobotCentric.getAsBoolean(), isAutoAim.getAsBoolean()));
+        return this.run(() -> drive(y.getAsDouble(), -x.getAsDouble(), rot.getAsDouble(), isRobotCentric.getAsBoolean(), isAutoAim.getAsBoolean()));
     }
 
     @Override

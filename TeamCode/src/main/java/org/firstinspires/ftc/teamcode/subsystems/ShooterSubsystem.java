@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -17,14 +18,17 @@ public class ShooterSubsystem extends StealthSubsystem {
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
+
+        shooterMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setPower(double power) {
-        //shooterMotor1.setPower(-power);
-        shooterMotor2.setPower(-power);
+        shooterMotor1.setPower(power);
+        shooterMotor2.setPower(power);
     }
     public void stop (){
-        //shooterMotor1.setPower(0);
+        shooterMotor1.setPower(0);
         shooterMotor2.setPower(0);
     }
     public void setPosition(double position) {

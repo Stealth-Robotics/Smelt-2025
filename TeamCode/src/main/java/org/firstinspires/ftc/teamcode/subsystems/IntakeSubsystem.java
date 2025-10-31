@@ -13,4 +13,7 @@ public class IntakeSubsystem extends StealthSubsystem {
     public void setPower(double power){
         intakeMotor.setPower(power);
     }
+    public void stop(){
+        intakeMotor.setPower(0);
+    }
 }
