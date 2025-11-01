@@ -31,8 +31,8 @@ public class Teleop extends StealthOpMode {
     GamepadEx driveGamepad;
     GamepadEx operatorGamepad;
     Follower follower;
-    private double top_pos = 0.4;
-    private double bottom_pos = 0.8;
+    private double top_pos = 0.8;
+    private double bottom_pos = 0.3;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -73,9 +73,12 @@ public class Teleop extends StealthOpMode {
 
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPower(1));
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenReleased(() -> shooterSubsystem.stop());
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> shooterSubsystem.changePositionUp());
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> shooterSubsystem.changePositionDown());
 
-        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPosition(top_pos));
-        driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.setPosition(bottom_pos));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPosition(top_pos));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.setPosition(bottom_pos));
+
         driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
 
         DoubleSupplier intakeSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.LEFT_BUMPER) ? 1 : 0));
@@ -85,7 +88,7 @@ public class Teleop extends StealthOpMode {
 
         DoubleSupplier shooterSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
         Trigger shooter = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
-        shooter.whenActive(() -> shooterSubsystem.setRpm(1500));
+        shooter.whenActive(() -> shooterSubsystem.setRpm(shooterSupplier.getAsDouble() * 3300));
         shooter.whenInactive(() -> shooterSubsystem.setRpm(0));
 
         beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));

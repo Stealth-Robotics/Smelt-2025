@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -23,7 +25,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private static final double TICKS_PER_REV = 28;
     private double currentRpm = 0;
     private final ElapsedTime shootTimer = new ElapsedTime();
-    public static final double MAX_RPM = 5200;
+    public static final double MAX_RPM = 4500;
     public static final double MIN_RPM = 3000;
     public static final double DEFAULT_RPM_FAR = 4750;
     public static final double DEFAULT_RPM_NEAR = 4250;
@@ -31,10 +33,13 @@ public class ShooterSubsystem extends StealthSubsystem {
     public static final double RPM_CHANGE_AMOUNT = 50;
     private static final double VELOCITY_TOLERANCE_LOW = 50; // The allowed RPM error in which the shooter is considered "ready".
     private static final double VELOCITY_TOLERANCE_HIGH = 100;
-    public static final double KP = 19.3;//old: -4.7
+    private double top_pos = 0.8;
+    private double bottom_pos = 0.3;
+
+    public static final double KP = 1;//old: -4.7
     public static final double KI = 0;//old: 0
-    public static final double KD = 1;//old: 2
-    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD, 0);
+    public static final double KD = 2;//old: 2
+    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD, 17);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
@@ -59,16 +64,29 @@ public class ShooterSubsystem extends StealthSubsystem {
     public void update(){
         updateAverageRpm();
     }
-    /*public void setPower(double power) {
-        shooterMotor1.setPower(power);
-        shooterMotor2.setPower(power);
-    }
-    public void stop (){
-        shooterMotor1.setPower(0);
-        shooterMotor2.setPower(0);
-    }*/
+
     public void setPosition(double position) {
         hoodServo.setPosition(position);
+        currentPosition = position;
+    }
+    private double currentPosition = 0;
+    public void changePositionUp(){
+        if (currentPosition <= top_pos){
+            currentPosition += 0.01;
+        }
+        else{
+            currentPosition = top_pos;
+        }
+        hoodServo.setPosition(currentPosition);
+    }
+    public void changePositionDown(){
+        if (currentPosition >= bottom_pos){
+            currentPosition -= 0.01;
+        }
+        else{
+            currentPosition = bottom_pos;
+        }
+        hoodServo.setPosition(currentPosition);
     }
 
     public void setRpm(double rpm) {
@@ -111,11 +129,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     @Override
     public void periodic() {
         update();
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
-        dashboardTelemetry.addData("RPM", getCurrentRpm());
-        dashboardTelemetry.addData("TargetRPM", 1500);
-        dashboardTelemetry.update();
+        telemetry.addData("RPM", getCurrentRpm());
+        telemetry.addData("currentPos", currentPosition);
     }
 }

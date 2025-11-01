@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.Command;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -23,9 +24,11 @@ import org.stealthrobotics.library.StealthSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.bylazar.configurables.annotations.Configurable;
+
 import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
-@Config
+@Configurable
 public class DriveSubsystem extends StealthSubsystem {
 
     private final Follower follower;
@@ -40,7 +43,7 @@ public class DriveSubsystem extends StealthSubsystem {
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
 
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
-    public static double AUTO_AIM_TOLERANCE = 0.3;
+    public static double AUTO_AIM_TOLERANCE = 0.2;
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
@@ -111,6 +114,9 @@ public class DriveSubsystem extends StealthSubsystem {
         follower.setTeleOpDrive(y, x, turn,  this.robotCentric);
         telemetry.addData("TURN:", turn);
         follower.update();
+    }
+    public Command FollowPath(PathChain path, boolean holdPoint){
+        return this.runOnce(()-> follower.followPath(path,holdPoint));
     }
     //TODO: make field centric toggleable
     //x is reversed
