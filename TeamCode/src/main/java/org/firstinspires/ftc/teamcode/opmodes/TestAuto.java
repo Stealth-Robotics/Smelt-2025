@@ -33,7 +33,7 @@ public class TestAuto extends StealthOpMode{
     @Override
     protected SequentialCommandGroup shoot() {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> shooterSubsystem.setPower(1)),
+            new InstantCommand(() -> shooterSubsystem.setRpm(3000)),
             new WaitCommand(1000),
             new InstantCommand(() ->beltSubsystem.setPower(0.75))
             );

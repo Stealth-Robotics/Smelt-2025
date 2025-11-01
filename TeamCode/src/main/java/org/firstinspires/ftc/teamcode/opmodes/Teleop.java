@@ -84,8 +84,8 @@ public class Teleop extends StealthOpMode {
 
         DoubleSupplier shooterSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
         Trigger shooter = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
-        shooter.whenActive(() -> shooterSubsystem.setPower(shooterSupplier.getAsDouble()));
-        shooter.whenInactive(() -> shooterSubsystem.stop());
+        shooter.whenActive(() -> shooterSubsystem.setRpm(3000));
+        shooter.whenInactive(() -> shooterSubsystem.setRpm(0));
 
         beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));
 
