@@ -44,10 +44,10 @@ public class CameraSubsystem extends StealthSubsystem{
     private static final double LL_ANGLE_DELTA = 90;
 
     /** How many degrees back the Limelight is rotated from perfectly vertical. */
-    private static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 20.1;
+    private static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0;
 
     /** Distance from the center of the Limelight lens to the floor, in inches. */
-    private static final double LIMELIGHT_FLOOR_HEIGHT_INCHES = 9.1;
+    private static final double LIMELIGHT_FLOOR_HEIGHT_INCHES = 13.5;
 
     /** The height of the center of an AprilTag from the floor, in inches. */
     private static final double APRIL_TAG_CENTER_HEIGHT_INCHES = 27.5; // Changed from 'f' suffix to double
@@ -79,7 +79,7 @@ public class CameraSubsystem extends StealthSubsystem{
         this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         limelight = hardwareMap.get(Limelight3A.class, NAME);
         limelight.start();
-        limelight.pipelineSwitch(APRILTAG_TARGET_BOTH.id);
+        limelight.pipelineSwitch(APRILTAGS_TARGET_BOTH.id);
     }
 
     /**
@@ -208,9 +208,9 @@ public class CameraSubsystem extends StealthSubsystem{
         Pipeline cur = getCurrentPipeline();
         switch (cur) {
             case APRILTAG_TARGET_BLUE:
-                setPipeline(APRILTAG_TARGET_BOTH);
+                setPipeline(APRILTAGS_TARGET_BOTH);
                 break;
-            case APRILTAG_TARGET_BOTH:
+            case APRILTAGS_TARGET_BOTH:
                 setPipeline(Pipeline.APRILTAG_TARGET_RED);
                 break;
             case APRILTAG_TARGET_RED:
@@ -218,7 +218,7 @@ public class CameraSubsystem extends StealthSubsystem{
                 break;
             case APRILTAG_MOTIF:
             default:
-                setPipeline(Pipeline.APRILTAG_TARGET_BLUE);
+                setPipeline(Pipeline.APRILTAGS_TARGET_BOTH);
                 break;
         }
     }
@@ -377,7 +377,7 @@ public class CameraSubsystem extends StealthSubsystem{
             case APRILTAG_TARGET_BLUE:
             case APRILTAG_TARGET_RED:
             case APRILTAG_MOTIF:
-            case APRILTAG_TARGET_BOTH:
+            case APRILTAGS_TARGET_BOTH:
                 List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
                 if (fiducials != null && !fiducials.isEmpty()) {
                     return AprilTagIds.fromId(fiducials.get(0).getFiducialId());

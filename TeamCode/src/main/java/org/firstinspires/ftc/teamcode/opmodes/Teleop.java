@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -29,6 +30,8 @@ public class Teleop extends StealthOpMode {
     GamepadEx driveGamepad;
     GamepadEx operatorGamepad;
     Follower follower;
+    private double top_pos = 0.4;
+    private double bottom_pos = 0.8;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -54,9 +57,14 @@ public class Teleop extends StealthOpMode {
                 () -> driveGamepad.getLeftY(),
                 () -> driveGamepad.getLeftX(),
                 () -> driveGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) - driveGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).get(),
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));
+
         configureBindings();
+    }
+
+    @Override
+    protected SequentialCommandGroup shoot() {
+        return null;
     }
 
 
@@ -65,13 +73,17 @@ public class Teleop extends StealthOpMode {
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPower(1));
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenReleased(() -> shooterSubsystem.stop());
 
+        driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPosition(top_pos));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.setPosition(bottom_pos));
+        driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
+
         DoubleSupplier intakeSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.LEFT_BUMPER) ? 1 : 0));
         Trigger intake = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.LEFT_BUMPER)));
         intake.whenActive(() -> intakeSubsystem.setPower(intakeSupplier.getAsDouble()));
         intake.whenInactive(() -> intakeSubsystem.stop());
 
-        DoubleSupplier shooterSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.B) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.Y) ? 1 : 0));
-        Trigger shooter = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.B)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.Y)));
+        DoubleSupplier shooterSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
+        Trigger shooter = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
         shooter.whenActive(() -> shooterSubsystem.setPower(shooterSupplier.getAsDouble()));
         shooter.whenInactive(() -> shooterSubsystem.stop());
 

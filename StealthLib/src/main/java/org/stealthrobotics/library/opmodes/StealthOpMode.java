@@ -3,6 +3,7 @@ package org.stealthrobotics.library.opmodes;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -134,4 +135,6 @@ public abstract class StealthOpMode extends LinearOpMode {
             AutoToTeleStorage.finalAutoHeading = getFinalHeading();
         }
     }
+
+    protected abstract SequentialCommandGroup shoot();
 }

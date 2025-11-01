@@ -1,0 +1,1 @@
+{"startPoint":{"x":81.01093560145809,"y":8.923450789793437,"heading":"linear","startDeg":90,"endDeg":180},"lines":[{"name":"Path 1","endPoint":{"x":107.95625759416768,"y":35.34386391251519,"heading":"linear","startDeg":90,"endDeg":180},"controlPoints":[{"x":89.40947752126367,"y":39.19319562575942}],"color":"#5C9AD6"}],"shapes":[]}
