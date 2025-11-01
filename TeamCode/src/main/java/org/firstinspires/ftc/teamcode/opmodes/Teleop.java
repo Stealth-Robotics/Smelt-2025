@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.beltCommand;
 import org.firstinspires.ftc.teamcode.commands.shootCommand;
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
@@ -60,8 +61,8 @@ public class Teleop extends StealthOpMode {
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));
 
         configureBindings();
-    }
 
+    }
     @Override
     protected SequentialCommandGroup shoot() {
         return null;
@@ -84,7 +85,7 @@ public class Teleop extends StealthOpMode {
 
         DoubleSupplier shooterSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
         Trigger shooter = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
-        shooter.whenActive(() -> shooterSubsystem.setRpm(3000));
+        shooter.whenActive(() -> shooterSubsystem.setRpm(1500));
         shooter.whenInactive(() -> shooterSubsystem.setRpm(0));
 
         beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));
