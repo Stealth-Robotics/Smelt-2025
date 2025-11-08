@@ -10,6 +10,9 @@ public class IntakeSubsystem extends StealthSubsystem {
     public IntakeSubsystem(HardwareMap hardwareMap){
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
     }
+    public void start() {
+        intakeMotor.setPower(1);
+    }
     public void setPower(double power){
         intakeMotor.setPower(power);
     }

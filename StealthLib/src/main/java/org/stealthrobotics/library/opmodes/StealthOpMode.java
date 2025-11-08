@@ -135,6 +135,4 @@ public abstract class StealthOpMode extends LinearOpMode {
             AutoToTeleStorage.finalAutoHeading = getFinalHeading();
         }
     }
-
-    protected abstract SequentialCommandGroup shoot();
 }

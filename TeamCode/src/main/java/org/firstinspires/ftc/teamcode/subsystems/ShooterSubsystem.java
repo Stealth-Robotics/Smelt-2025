@@ -69,6 +69,12 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo.setPosition(position);
         currentPosition = position;
     }
+    public void setHoodUp(){
+        setPosition(top_pos);
+    }
+    public void setHoodDown(){
+        setPosition(bottom_pos);
+    }
     private double currentPosition = 0;
     public void changePositionUp(){
         if (currentPosition <= top_pos){

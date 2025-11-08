@@ -1,13 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.follower.FollowerConstants;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -18,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.stealthrobotics.library.opmodes.StealthOpMode;
 
 
-@Autonomous(name = "TestAuto")
+@Autonomous(name = "TestAuto", group="Test", preselectTeleOp = "Teleop")
 public class TestAuto extends StealthOpMode{
     DriveSubsystem driveSubsystem;
     ShooterSubsystem shooterSubsystem;
@@ -39,8 +35,7 @@ public class TestAuto extends StealthOpMode{
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();*/
     }
-
-    @Override
+    
     protected SequentialCommandGroup shoot() {
         return new SequentialCommandGroup(
             new InstantCommand(() -> shooterSubsystem.setPosition(bottom_pos)),

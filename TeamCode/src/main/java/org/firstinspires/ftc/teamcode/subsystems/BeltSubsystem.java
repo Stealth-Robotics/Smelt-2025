@@ -14,6 +14,9 @@ public class BeltSubsystem extends StealthSubsystem {
     public BeltSubsystem (HardwareMap hardwareMap) {
         beltMotor = hardwareMap.get(DcMotorEx.class, "beltMotor");
     }
+    public void start(){
+        beltMotor.setPower(0.75);
+    }
     public void setPower(double power){
         beltMotor.setPower(0.75 * -power);
     }

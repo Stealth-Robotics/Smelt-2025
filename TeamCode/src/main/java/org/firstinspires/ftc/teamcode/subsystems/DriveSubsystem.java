@@ -101,7 +101,7 @@ public class DriveSubsystem extends StealthSubsystem {
             Pose llPose = cameraSubsystem.getAvgTargetPose(50); // Get averaged target position.
             if (llPose != null) {
                 // Calculate the turn power needed to center the target.
-                double output = getScaledTxOutput(llPose.getX(), AUTO_AIM_TOLERANCE);
+                double output = getScaledTxOutput(llPose.getX() , AUTO_AIM_TOLERANCE);
                 //The output is applied to the rotation power (note: may need to be inverted).
                 turn = -output;
 
