@@ -33,8 +33,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     public static final double RPM_CHANGE_AMOUNT = 50;
     private static final double VELOCITY_TOLERANCE_LOW = 50; // The allowed RPM error in which the shooter is considered "ready".
     private static final double VELOCITY_TOLERANCE_HIGH = 100;
-    private double top_pos = 0.8;
-    private double bottom_pos = 0.3;
+    private double top_pos = 1;
+    private double bottom_pos = 0;
 
     public static final double KP = 1;//old: -4.7
     public static final double KI = 0;//old: 0
@@ -46,7 +46,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
 
         shooterMotor1.setDirection(DcMotorEx.Direction.REVERSE);
-        shooterMotor2.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
 
         shooterMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooterMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
