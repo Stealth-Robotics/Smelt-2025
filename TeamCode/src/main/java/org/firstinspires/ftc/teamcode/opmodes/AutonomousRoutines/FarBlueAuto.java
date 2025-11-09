@@ -51,6 +51,7 @@ public class FarBlueAuto extends DecodeAutos {
                 .addParametricCallback(1, () -> {
                     follower.setMaxPower(1);
                     intake.stop();
+                    belt.stop();
                 })
                 .setReversed()
                 .build();
