@@ -26,20 +26,15 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double currentRpm = 0;
     private final ElapsedTime shootTimer = new ElapsedTime();
     public static final double MAX_RPM = 4500;
-    public static final double MIN_RPM = 3000;
-    public static final double DEFAULT_RPM_FAR = 4750;
-    public static final double DEFAULT_RPM_NEAR = 4250;
-    public static final double DEFAULT_RPM_MID = 4400;
-    public static final double RPM_CHANGE_AMOUNT = 50;
-    private static final double VELOCITY_TOLERANCE_LOW = 50; // The allowed RPM error in which the shooter is considered "ready".
-    private static final double VELOCITY_TOLERANCE_HIGH = 100;
-    private double top_pos = 1;
-    private double bottom_pos = 0;
+    public static final double MIN_RPM = 1500;
+    private double far_shot_pos = 0.25;
+    private double top_pos = 0;
+    private double bottom_pos = 0.65;
 
-    public static final double KP = 1;//old: -4.7
-    public static final double KI = 0;//old: 0
-    public static final double KD = 2;//old: 2
-    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD, 17);
+    public static final double KP = 40;//old: 40
+    public static final double KI = 0;//old: 0.02
+    public static final double KD = 0.7;//old: 0.7
+    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD, 1);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
@@ -77,8 +72,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     }
     private double currentPosition = 0;
     public void changePositionUp(){
-        if (currentPosition <= top_pos){
-            currentPosition += 0.01;
+        if (currentPosition >= top_pos){
+            currentPosition -= 0.01;
         }
         else{
             currentPosition = top_pos;
@@ -86,8 +81,8 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo.setPosition(currentPosition);
     }
     public void changePositionDown(){
-        if (currentPosition >= bottom_pos){
-            currentPosition -= 0.01;
+        if (currentPosition <= bottom_pos){
+            currentPosition += 0.01;
         }
         else{
             currentPosition = bottom_pos;
