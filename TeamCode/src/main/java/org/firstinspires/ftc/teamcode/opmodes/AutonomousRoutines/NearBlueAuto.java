@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
-public class NearBlueAuto {
+public class NearBlueAuto extends DecodeAutos{
     public PathChain GoToShoot;
     public PathChain GoToIntake;
     public PathChain Intake;
