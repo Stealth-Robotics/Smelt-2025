@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.stealthrobotics.library.opmodes.StealthOpMode;
 
+import kotlin.time.Instant;
+
 
 @Autonomous(name = "TestAuto", group="Test", preselectTeleOp = "Teleop")
 public class TestAuto extends StealthOpMode{
@@ -20,8 +22,8 @@ public class TestAuto extends StealthOpMode{
     ShooterSubsystem shooterSubsystem;
     BeltSubsystem beltSubsystem;
     IntakeSubsystem intakeSubsystem;
-    private double top_pos = 0.8;
-    private double bottom_pos = 0.3;
+    private double top_pos = 0;
+    private double bottom_pos = 0.65;
     static PathChain Path1;
     @Override
     public SequentialCommandGroup initialize() {
@@ -40,10 +42,18 @@ public class TestAuto extends StealthOpMode{
     protected SequentialCommandGroup shoot() {
         return new SequentialCommandGroup(
             new InstantCommand(() -> shooterSubsystem.setPosition(bottom_pos)),
-            new InstantCommand(() -> shooterSubsystem.setRpm(3200)),
-            new WaitCommand(2000),
-            new InstantCommand(() ->beltSubsystem.setPower(-0.75)), new WaitCommand(6000),
-            new InstantCommand(() -> intakeSubsystem.setPower(1))
+            new InstantCommand(() -> driveSubsystem.doAimAtTarget(50, 2, 0)),
+            new InstantCommand(() -> shooterSubsystem.shootOneBallFar())
+
+//            new InstantCommand(() -> shooterSubsystem.setRpm(3500)),
+//            new WaitCommand(5000),
+//            new InstantCommand(() ->beltSubsystem.setPower(-0.75)), new WaitCommand(150),
+//            new InstantCommand(() -> beltSubsystem.setPower(0)), new WaitCommand(2000),
+//            new InstantCommand(() -> beltSubsystem.setPower(-0.75)), new WaitCommand(3000),
+//            new InstantCommand(() -> intakeSubsystem.setPower(1)), new WaitCommand(2000),
+//            new InstantCommand(() -> intakeSubsystem.setPower(0)),
+//            new InstantCommand(() -> beltSubsystem.setPower(0)),
+//            new InstantCommand(() -> shooterSubsystem.setRpm(0))
             );
     }
 
