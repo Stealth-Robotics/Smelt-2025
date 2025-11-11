@@ -28,8 +28,10 @@ public abstract class StealthOpMode extends LinearOpMode {
 
     /**
      * Override this to setup your hardware, commands, button bindings, etc.
+     *
+     * @return
      */
-    public abstract void initialize();
+    public abstract SequentialCommandGroup initialize();
 
     /**
      * Override this to do work while waiting for the op-mode to start.

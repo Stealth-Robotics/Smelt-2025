@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+@Autonomous(name = "NearRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class NearRedAuto extends DecodeAutos{
     public PathChain GoToShoot;
     public PathChain GoToIntake;
@@ -12,7 +16,9 @@ public class NearRedAuto extends DecodeAutos{
     public PathChain GoToShoot2;
     public PathChain GoOffLine;
 
-    public NearRedAuto(Follower follower) {
+    public SequentialCommandGroup initialize() {
+        super.initialize();
+        Follower follower = drive.getFollower();
         GoToShoot = follower
                 .pathBuilder()
                 .addPath(
@@ -64,5 +70,17 @@ public class NearRedAuto extends DecodeAutos{
                 .setTangentHeadingInterpolation()
                 .build();
 
+        return null;
+    }
+
+    public Command getAutoCommand() {
+        return new SequentialCommandGroup(
+                drive.FollowPath(GoToShoot, true),
+                shoot(),
+                drive.FollowPath(GoToIntake, true),
+                drive.FollowPath(Intake, true),
+                drive.FollowPath(GoToShoot2, true),
+                drive.FollowPath(GoOffLine, true)
+        );
     }
 }

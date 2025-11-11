@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -10,9 +8,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.beltCommand;
-import org.firstinspires.ftc.teamcode.commands.shootCommand;
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -37,7 +33,7 @@ public class Teleop extends StealthOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
-    public void initialize() {
+    public SequentialCommandGroup initialize() {
 
         beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
@@ -62,6 +58,7 @@ public class Teleop extends StealthOpMode {
 
         configureBindings();
 
+        return null;
     }
 
     protected SequentialCommandGroup shoot() {

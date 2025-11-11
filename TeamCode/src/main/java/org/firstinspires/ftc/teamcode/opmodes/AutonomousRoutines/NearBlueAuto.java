@@ -6,14 +6,19 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-public class NearBlueAuto extends DecodeAutos{
+@Autonomous(name = "NearBlueAuto", group = "Autos", preselectTeleOp = "Teleop")
+public class NearBlueAuto extends DecodeAutos {
     public PathChain GoToShoot;
     public PathChain GoToIntake;
     public PathChain Intake;
     public PathChain GoToShoot2;
 
-    public NearBlueAuto(Follower follower) {
+    @Override
+    public SequentialCommandGroup initialize() {
+        super.initialize();
+        Follower follower = drive.getFollower();
         GoToShoot = follower
                 .pathBuilder()
                 .addPath(
@@ -46,5 +51,17 @@ public class NearBlueAuto extends DecodeAutos{
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(150))
                 .build();
+
+        return null;
+    }
+
+    public Command getAutoCommand() {
+        return new SequentialCommandGroup(
+                drive.FollowPath(GoToShoot, true),
+                shoot(),
+                drive.FollowPath(GoToIntake, true),
+                drive.FollowPath(Intake, true),
+                drive.FollowPath(GoToShoot2, true)
+        );
     }
 }

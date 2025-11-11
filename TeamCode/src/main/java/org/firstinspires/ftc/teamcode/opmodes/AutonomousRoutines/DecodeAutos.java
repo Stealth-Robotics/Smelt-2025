@@ -19,12 +19,13 @@ public class DecodeAutos extends StealthOpMode {
     protected ShooterSubsystem shooter;
 
     @Override
-    public void initialize() {
+    public SequentialCommandGroup initialize() {
         belt = new BeltSubsystem(hardwareMap);
         camera = new CameraSubsystem(hardwareMap);
         drive = new DriveSubsystem(hardwareMap, telemetry);
         intake = new IntakeSubsystem(hardwareMap);
         shooter = new ShooterSubsystem(hardwareMap);
+        return null;
     }
 
 

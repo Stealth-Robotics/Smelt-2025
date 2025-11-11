@@ -24,7 +24,7 @@ public class TestAuto extends StealthOpMode{
     private double bottom_pos = 0.3;
     static PathChain Path1;
     @Override
-    public void initialize() {
+    public SequentialCommandGroup initialize() {
         driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         beltSubsystem = new BeltSubsystem(hardwareMap);
@@ -34,6 +34,7 @@ public class TestAuto extends StealthOpMode{
                     .addPath(new BezierLine(new Pose(56.000, 8.000), new Pose(56.000, 36.000)))
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();*/
+        return null;
     }
     
     protected SequentialCommandGroup shoot() {

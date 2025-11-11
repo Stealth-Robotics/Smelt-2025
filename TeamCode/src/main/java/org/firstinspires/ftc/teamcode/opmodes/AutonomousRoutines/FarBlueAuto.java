@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -18,7 +17,7 @@ public class FarBlueAuto extends DecodeAutos {
     public PathChain GoOffLine;
 
     @Override
-    public void initialize() {
+    public SequentialCommandGroup initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
         GoToShoot = follower
@@ -73,6 +72,7 @@ public class FarBlueAuto extends DecodeAutos {
                 .setTangentHeadingInterpolation()
                 .build();
 
+        return null;
     }
 
     public Command getAutoCommand() {

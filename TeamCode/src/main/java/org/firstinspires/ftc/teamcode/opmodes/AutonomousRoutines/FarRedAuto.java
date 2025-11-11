@@ -8,7 +8,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "FarBlueAuto", group = "Autos", preselectTeleOp = "Teleop")
+@Autonomous(name = "FarRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class FarRedAuto extends DecodeAutos {
     public PathChain GoToShoot;
     public PathChain GoToIntake;
@@ -17,7 +17,7 @@ public class FarRedAuto extends DecodeAutos {
     public PathChain GoOffLine;
 
     @Override
-    public void initialize() {
+    public SequentialCommandGroup initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
         GoToShoot = follower
@@ -72,6 +72,7 @@ public class FarRedAuto extends DecodeAutos {
                 .setTangentHeadingInterpolation()
                 .build();
 
+        return null;
     }
 
     public Command getAutoCommand() {
