@@ -38,7 +38,7 @@ public class DriveSubsystem extends StealthSubsystem {
     public static final double MAX_ROTATION_POWER = 0.90;
 
     public static final double MIN_ROTATION_POWER = 0.068 ;
-
+    private double offset = 0;
     private static final PIDFCoefficients HEADING_COEFFICIENTS
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
 
@@ -73,8 +73,15 @@ public class DriveSubsystem extends StealthSubsystem {
             //empty block
         }
     }
-
-    public boolean doAimAtTarget(double tolerance, long latency) {
+    public void setAlliance(boolean isAllianceBlue){
+        if(isAllianceBlue){
+            offset = 2;
+        }
+        else{
+            offset = -2;
+        }
+    }
+    public boolean doAimAtTarget(double tolerance, double offset, long latency) {
         if (!follower.isTeleopDrive()) {
             follower.startTeleopDrive(true);
         }
@@ -84,7 +91,7 @@ public class DriveSubsystem extends StealthSubsystem {
         double turn = 0;
         if (llPose != null) {
             // Calculate the turn power needed to center the target.
-            double output = getScaledTxOutput(llPose.getX(), tolerance);
+            double output = getScaledTxOutput(llPose.getX() + offset, tolerance);
             turn = output;
         } else {
             // If the target is lost, reset the PID controller to prevent integral windup.
@@ -94,14 +101,14 @@ public class DriveSubsystem extends StealthSubsystem {
         follower.setTeleOpDrive(0, 0, turn, false);
         return turn == 0 && llPose != null;
     }
-    private void drive(double y, double x, double rot, boolean isAutoAim) {
+    private void drive(double y, double x, double rot, boolean isAutoAim, double offset) {
         double turn = rot;
         if (isAutoAim) {
             cameraSubsystem.getLastResult(); // Force an update of the Limelight data.
             Pose llPose = cameraSubsystem.getAvgTargetPose(50); // Get averaged target position.
             if (llPose != null) {
                 // Calculate the turn power needed to center the target.
-                double output = getScaledTxOutput(llPose.getX() , AUTO_AIM_TOLERANCE);
+                double output = getScaledTxOutput(llPose.getX() + offset , AUTO_AIM_TOLERANCE);
                 //The output is applied to the rotation power (note: may need to be inverted).
                 turn = -output;
 
@@ -124,7 +131,7 @@ public class DriveSubsystem extends StealthSubsystem {
     public Command driveTeleop(DoubleSupplier y, DoubleSupplier x, DoubleSupplier rot, BooleanSupplier isAutoAim) {
         telemetry.addData("Driving", y.getAsDouble());
 
-        return this.run(() -> drive(y.getAsDouble(), -x.getAsDouble(), rot.getAsDouble(), isAutoAim.getAsBoolean()));
+        return this.run(() -> drive(y.getAsDouble(), -x.getAsDouble(), rot.getAsDouble(), isAutoAim.getAsBoolean(), offset));
     }
 
     public Command swapDriveMode()
@@ -162,6 +169,7 @@ public class DriveSubsystem extends StealthSubsystem {
         telemetry.addData("isRobotCentric", robotCentric);
         telemetry.addData("X Pose", follower.getPose().getX());
         telemetry.addData("Y Pose", follower.getPose().getY());
+        telemetry.addData("offset", offset);
         follower.update();
     }
 
