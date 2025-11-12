@@ -96,7 +96,7 @@ public class Teleop extends StealthOpMode {
         shooterFar.whenActive(() -> shooterSubsystem.setRpm(shooterFarSupplier.getAsDouble() * far_shot_rpm));
         shooterFar.whenInactive(() -> shooterSubsystem.setRpm(0));
 
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(() -> shooterSubsystem.setRpm(-1000));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(() -> shooterSubsystem.setRpm(0));
 
 
         DoubleSupplier shooterNearSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
