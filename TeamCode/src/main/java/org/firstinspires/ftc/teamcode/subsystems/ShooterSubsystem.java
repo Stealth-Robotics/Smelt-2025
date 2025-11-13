@@ -4,7 +4,10 @@ import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -30,7 +33,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private final ElapsedTime shootTimer = new ElapsedTime();
     public static final double MAX_RPM = 4500;
     public static final double MIN_RPM = 1500;
-    private double far_shot_pos = 0.25;
+    private double far_shot_pos = 0.24;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
     private double VELOCITY_TOLERANCE_LOW = 10;
@@ -77,17 +80,11 @@ public class ShooterSubsystem extends StealthSubsystem {
         }
         return (difference <= VELOCITY_TOLERANCE_HIGH||curMs > MAX_SHOOT_TIME_MS);
     }
-    public void shootOneBallFar(){
-        setRpm(3500);
-        beltMoveIfShoot();
-    }
-    public void beltMoveIfShoot(){
-        if(isShootReady(3500)){
-            beltSubsystem.setPower(-0.75);
-        }
-        else{
-            return(false);
-        }
+    public Command shootOneBallFar(){
+        return  new InstantCommand(() -> setRpm(3500)).
+                andThen(new InstantCommand(() -> setPosition(far_shot_pos)).
+                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))));
     }
     public void setPosition(double position) {
         hoodServo.setPosition(position);

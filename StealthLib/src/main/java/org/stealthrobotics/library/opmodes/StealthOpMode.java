@@ -3,7 +3,6 @@ package org.stealthrobotics.library.opmodes;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,10 +27,8 @@ public abstract class StealthOpMode extends LinearOpMode {
 
     /**
      * Override this to setup your hardware, commands, button bindings, etc.
-     *
-     * @return
      */
-    public abstract SequentialCommandGroup initialize();
+    public abstract void initialize();
 
     /**
      * Override this to do work while waiting for the op-mode to start.

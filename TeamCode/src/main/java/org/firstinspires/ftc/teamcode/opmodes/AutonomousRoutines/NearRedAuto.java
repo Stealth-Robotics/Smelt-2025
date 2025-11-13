@@ -16,7 +16,7 @@ public class NearRedAuto extends DecodeAutos{
     public PathChain GoToShoot2;
     public PathChain GoOffLine;
 
-    public SequentialCommandGroup initialize() {
+    public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
         GoToShoot = follower
@@ -70,7 +70,6 @@ public class NearRedAuto extends DecodeAutos{
                 .setTangentHeadingInterpolation()
                 .build();
 
-        return null;
     }
 
     public Command getAutoCommand() {

@@ -17,7 +17,7 @@ public class FarRedAuto extends DecodeAutos {
     public PathChain GoOffLine;
 
     @Override
-    public SequentialCommandGroup initialize() {
+    public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
         GoToShoot = follower
@@ -72,7 +72,6 @@ public class FarRedAuto extends DecodeAutos {
                 .setTangentHeadingInterpolation()
                 .build();
 
-        return null;
     }
 
     public Command getAutoCommand() {

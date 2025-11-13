@@ -3,17 +3,15 @@ package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.CameraSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.stealthrobotics.library.opmodes.StealthOpMode;
-
-import kotlin.time.Instant;
 
 
 @Autonomous(name = "TestAuto", group="Test", preselectTeleOp = "Teleop")
@@ -22,29 +20,28 @@ public class TestAuto extends StealthOpMode{
     ShooterSubsystem shooterSubsystem;
     BeltSubsystem beltSubsystem;
     IntakeSubsystem intakeSubsystem;
+    CameraSubsystem cameraSubsystem;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
     static PathChain Path1;
     @Override
-    public SequentialCommandGroup initialize() {
+    public void initialize() {
         driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        cameraSubsystem = new CameraSubsystem(hardwareMap);
 
         /*Path1 = driveSubsystem.getFollower().pathBuilder()
                     .addPath(new BezierLine(new Pose(56.000, 8.000), new Pose(56.000, 36.000)))
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                     .build();*/
-        return null;
     }
     
     protected SequentialCommandGroup shoot() {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> shooterSubsystem.setPosition(bottom_pos)),
-            new InstantCommand(() -> driveSubsystem.doAimAtTarget(50, 2, 0)),
-            new InstantCommand(() -> shooterSubsystem.shootOneBallFar())
-
+            new InstantCommand(() -> driveSubsystem.doAimAtTarget(.1, 2, 50)),
+            shooterSubsystem.shootOneBallFar()
 //            new InstantCommand(() -> shooterSubsystem.setRpm(3500)),
 //            new WaitCommand(5000),
 //            new InstantCommand(() ->beltSubsystem.setPower(-0.75)), new WaitCommand(150),

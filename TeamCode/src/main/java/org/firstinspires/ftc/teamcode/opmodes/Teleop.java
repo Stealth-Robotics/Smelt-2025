@@ -28,7 +28,7 @@ public class Teleop extends StealthOpMode {
     GamepadEx operatorGamepad;
     Follower follower;
     private double top_pos = 0;
-    private double far_shot_pos = 0.25;
+    private double far_shot_pos = 0.24;
     private double bottom_pos = 0.65;
     private double far_shot_rpm = 3500;
 
@@ -37,7 +37,7 @@ public class Teleop extends StealthOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
-    public SequentialCommandGroup initialize() {
+    public void initialize() {
 
         beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
@@ -61,15 +61,11 @@ public class Teleop extends StealthOpMode {
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));
 
         configureBindings();
-
-        return null;
     }
 
     protected SequentialCommandGroup shoot() {
         return null;
     }
-
-
     private void configureBindings() {
 
         //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPower(1));
@@ -91,12 +87,10 @@ public class Teleop extends StealthOpMode {
         intake.whenActive(() -> intakeSubsystem.setPower(intakeSupplier.getAsDouble()));
         intake.whenInactive(() -> intakeSubsystem.stop());
 
-        DoubleSupplier shooterFarSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
-        Trigger shooterFar = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
+        DoubleSupplier shooterFarSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0) - (operatorGamepad.getButton(GamepadKeys.Button.A) ? 1 : 0));
+        Trigger shooterFar = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)).or(new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.A))));
         shooterFar.whenActive(() -> shooterSubsystem.setRpm(shooterFarSupplier.getAsDouble() * far_shot_rpm));
         shooterFar.whenInactive(() -> shooterSubsystem.setRpm(0));
-
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(() -> shooterSubsystem.setRpm(0));
 
 
         DoubleSupplier shooterNearSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));

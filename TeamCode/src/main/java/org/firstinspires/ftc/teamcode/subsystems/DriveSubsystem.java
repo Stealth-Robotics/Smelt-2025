@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.MathFunctions;
@@ -19,6 +21,7 @@ import com.pedropathing.control.PIDFController;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.usablethings.Drawing;
 import org.stealthrobotics.library.StealthSubsystem;
 
 import java.util.function.BooleanSupplier;
@@ -32,6 +35,7 @@ import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 public class DriveSubsystem extends StealthSubsystem {
 
     private final Follower follower;
+    private final TelemetryManager telemetryM;
     private double headingOffset = 0.0;
     private final CameraSubsystem cameraSubsystem;
     private final ShooterSubsystem shooterSubsystem;
@@ -50,6 +54,9 @@ public class DriveSubsystem extends StealthSubsystem {
         this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
         follower.setStartingPose(new Pose(0, 0, 0));
         follower.startTeleOpDrive(true);
+        Drawing.init();
+        this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
     }
 
     public void update(){
@@ -78,7 +85,7 @@ public class DriveSubsystem extends StealthSubsystem {
             offset = 2;
         }
         else{
-            offset = -2;
+            offset = -2.5;
         }
     }
     public boolean doAimAtTarget(double tolerance, double offset, long latency) {
@@ -162,6 +169,10 @@ public class DriveSubsystem extends StealthSubsystem {
         }
         return  MathFunctions.clamp(pidOutput, -MAX_ROTATION_POWER, MAX_ROTATION_POWER);
     }
+    private void draw() {
+        Drawing.drawDebug(follower);
+    }
+
     @Override
     public void periodic() {
         telemetry.addData("Raw Heading", getHeading());
@@ -170,6 +181,7 @@ public class DriveSubsystem extends StealthSubsystem {
         telemetry.addData("X Pose", follower.getPose().getX());
         telemetry.addData("Y Pose", follower.getPose().getY());
         telemetry.addData("offset", offset);
+        draw();
         follower.update();
     }
 

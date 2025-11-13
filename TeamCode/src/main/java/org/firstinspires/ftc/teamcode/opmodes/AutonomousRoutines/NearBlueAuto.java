@@ -16,7 +16,7 @@ public class NearBlueAuto extends DecodeAutos {
     public PathChain GoToShoot2;
 
     @Override
-    public SequentialCommandGroup initialize() {
+    public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
         GoToShoot = follower
@@ -52,7 +52,6 @@ public class NearBlueAuto extends DecodeAutos {
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(150))
                 .build();
 
-        return null;
     }
 
     public Command getAutoCommand() {
