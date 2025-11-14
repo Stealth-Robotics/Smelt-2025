@@ -52,7 +52,6 @@ public class DriveSubsystem extends StealthSubsystem {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
         this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
-        follower.setStartingPose(new Pose(0, 0, 0));
         follower.startTeleOpDrive(true);
         Drawing.init();
         this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
