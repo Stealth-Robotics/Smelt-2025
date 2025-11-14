@@ -27,6 +27,7 @@ public class DecodeAutos extends StealthOpMode {
         drive = new DriveSubsystem(hardwareMap, telemetry);
         intake = new IntakeSubsystem(hardwareMap);
         shooter = new ShooterSubsystem(hardwareMap);
+        drive.resetHeading();
 
     }
 

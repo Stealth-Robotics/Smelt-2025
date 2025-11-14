@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
@@ -45,7 +46,6 @@ public class DriveSubsystem extends StealthSubsystem {
     private double offset = 0;
     private static final PIDFCoefficients HEADING_COEFFICIENTS
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
-
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
     public static double AUTO_AIM_TOLERANCE = 0.2;
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -129,8 +129,9 @@ public class DriveSubsystem extends StealthSubsystem {
         telemetry.addData("TURN:", turn);
         follower.update();
     }
-    public Command FollowPath(PathChain path, boolean holdPoint){
-        return this.runOnce(()-> follower.followPath(path,holdPoint));
+    public Command  FollowPath(PathChain path, boolean holdPoint){
+        return this.runOnce(()-> follower.followPath(path,holdPoint))
+                        .andThen(new WaitUntilCommand(()-> !follower.isBusy()));
     }
     //TODO: make field centric toggleable
     //x is reversed

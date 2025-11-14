@@ -20,6 +20,7 @@ public class FarBlueAuto extends DecodeAutos {
     public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
+        telemetry.addData("Working?", "yes");
         GoToShoot = follower
                 .pathBuilder()
                 .addPath(
@@ -76,12 +77,12 @@ public class FarBlueAuto extends DecodeAutos {
 
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
-                drive.FollowPath(GoToShoot, true),
-                shoot(),
-                drive.FollowPath(GoToIntake, true),
-                drive.FollowPath(Intake, true),
-                drive.FollowPath(GoToShoot2, true),
-                drive.FollowPath(GoOffLine, true)
+                drive.FollowPath(GoToShoot, true)
+//                shoot(),
+//                drive.FollowPath(GoToIntake, true),
+//                drive.FollowPath(Intake, true),
+//                drive.FollowPath(GoToShoot2, true),
+//                drive.FollowPath(GoOffLine, true)
         );
     }
     //new WaitCommand(5000),
