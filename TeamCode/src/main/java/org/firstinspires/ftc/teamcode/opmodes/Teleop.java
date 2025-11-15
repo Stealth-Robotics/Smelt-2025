@@ -31,8 +31,8 @@ public class Teleop extends StealthOpMode {
     private double far_shot_pos = 0.24;
     private double bottom_pos = 0.65;
     private double far_shot_rpm = 3500;
-
     private double near_shot_rpm = 2600;
+    private double cycle_rpm = 500;
     private double offset;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -97,6 +97,12 @@ public class Teleop extends StealthOpMode {
         Trigger shooterNear = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
         shooterNear.whenActive(() -> shooterSubsystem.setRpm(shooterNearSupplier.getAsDouble() * near_shot_rpm));
         shooterNear.whenInactive(() -> shooterSubsystem.setRpm(0));
+
+        DoubleSupplier shooterCycleSupplier = () -> ((operatorGamepad.getButton(GamepadKeys.Button.X) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
+        Trigger shooterCycle = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.X)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
+        shooterCycle.whenActive(() -> shooterSubsystem.setRpm(shooterCycleSupplier.getAsDouble() * cycle_rpm));
+        shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(0));
+
 
 
         beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));

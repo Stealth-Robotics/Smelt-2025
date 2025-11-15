@@ -31,13 +31,5 @@ public class DecodeAutos extends StealthOpMode {
 
     }
 
-    protected SequentialCommandGroup shoot() {
-        return new SequentialCommandGroup(
-                new InstantCommand(() -> shooter.setHoodDown()),
-                new InstantCommand(() -> shooter.setRpm(3500)),
-                new WaitCommand(2000),
-                new InstantCommand(() ->belt.setPower(0.75)), new WaitCommand(6000),
-                new InstantCommand(() -> intake.setPower(1))
-        );
-    }
+
 }

@@ -8,7 +8,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "NearRedAut0", group = "Autos", preselectTeleOp = "Teleop")
+@Autonomous(name = "NearRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class NearRedAuto extends DecodeAutos{
     public PathChain movetoshoot;
     public PathChain turntointake;

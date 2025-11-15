@@ -101,6 +101,29 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new WaitCommand(200)).
                 andThen(new InstantCommand(() -> setRpm(0)));
     }
+    public Command shootThreeBallsFar(){
+        return new InstantCommand(() -> beltSubsystem.setPower(0.25)).
+                andThen(new WaitCommand(600)).
+                andThen(new InstantCommand(() -> setRpm(3500))).
+                andThen(new InstantCommand(() -> setPosition(far_shot_pos))).
+                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
+                andThen(new WaitCommand(100)).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(0.25))).
+                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
+                andThen(new WaitCommand(100)).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(0.25))).
+                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
+                andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
+                andThen(new WaitCommand(2000)).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
+                andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
+                andThen(new InstantCommand(() -> setRpm(-100))).
+                andThen(new WaitCommand(200)).
+                andThen(new InstantCommand(() -> setRpm(0)));
+    }
     public void setPosition(double position) {
         hoodServo.setPosition(position);
         currentPosition = position;
