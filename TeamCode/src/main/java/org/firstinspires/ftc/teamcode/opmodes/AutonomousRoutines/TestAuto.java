@@ -40,7 +40,7 @@ public class TestAuto extends StealthOpMode{
     
     protected SequentialCommandGroup shoot() {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> driveSubsystem.doAimAtTarget(.1, 2, 50)),
+            new InstantCommand(() -> driveSubsystem.doAimAtTarget(.2, 2, 100)),
             shooterSubsystem.shootOneBallFar()
 //            new InstantCommand(() -> shooterSubsystem.setRpm(3500)),
 //            new WaitCommand(5000),

@@ -81,7 +81,7 @@ public class DriveSubsystem extends StealthSubsystem {
     }
     public void setAlliance(boolean isAllianceBlue){
         if(isAllianceBlue){
-            offset = 2;
+            offset = 2.5 ;
         }
         else{
             offset = -2.5;
@@ -101,7 +101,7 @@ public class DriveSubsystem extends StealthSubsystem {
         if (llPose != null) {
             // Calculate the turn power needed to center the target.
             double output = getScaledTxOutput(llPose.getX() + offset, tolerance);
-            turn = output;
+            turn = -output;
         } else {
             // If the target is lost, reset the PID controller to prevent integral windup.
             headingController.reset();

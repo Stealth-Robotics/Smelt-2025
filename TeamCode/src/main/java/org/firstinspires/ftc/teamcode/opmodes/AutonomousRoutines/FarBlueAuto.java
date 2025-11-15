@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -57,11 +58,11 @@ public class FarBlueAuto extends DecodeAutos{
 
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> drive.doAimAtTarget(.1,  offset,50)),
-                shooter.shootThreeBallsFar(),
-                drive.FollowPath(movetointake, true),
-                drive.FollowPath(gointake, true),
-                drive.FollowPath(gobacktoshoot, true)
+                new WaitUntilCommand(() -> drive.doAimAtTarget(.1, offset, 50)),
+                shooter.shootThreeBallsFar()
+//                drive.FollowPath(movetointake, true),
+//                drive.FollowPath(gointake, true),
+//                drive.FollowPath(gobacktoshoot, true)
         );
     }
 }
