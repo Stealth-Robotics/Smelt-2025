@@ -87,6 +87,9 @@ public class DriveSubsystem extends StealthSubsystem {
             offset = -2.5;
         }
     }
+    public void setPose(Pose pose){
+        follower.setPose(pose);
+    }
     public boolean doAimAtTarget(double tolerance, double offset, long latency) {
         if (!follower.isTeleopDrive()) {
             follower.startTeleopDrive(true);

@@ -13,23 +13,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "BackupAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class BackupAuto extends DecodeAutos{
-    public PathChain move;
+    public PathChain forwards;
     public void initialize() {
         super.initialize();
             Follower follower = drive.getFollower();
-            follower.setStartingPose(new Pose(56.000, 9, 90));
-            move = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(56.000, 9), new Pose(56.000, 50.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(90))
-                    .build();
+            forwards = follower.pathBuilder()
+                .setGlobalDeceleration()
+                .addPath(new BezierLine(new Pose(0,0), new Pose(0,48)))
+                .setConstantHeadingInterpolation(Math.toRadians(90))
+                .build();
+            follower.setStartingPose(new Pose(0, 0, Math.toRadians(90)));
     }
 
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
-                drive.FollowPath(move, true)
+                drive.FollowPath(forwards, true)
         );
     }
 }

@@ -28,14 +28,14 @@ public class Constants {
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,
             100,
-            1.3,
-            0.8);
+            1,
+            0.3);
 
     public static PinpointConstants localizer = new PinpointConstants()
-            .forwardPodY(5)
+            .forwardPodY(-5)
             .strafePodX(5)
             .yawScalar(1)
-            .distanceUnit(DistanceUnit.MM)
+            .distanceUnit(DistanceUnit.INCH)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
@@ -45,13 +45,16 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(68.86)
+            .xVelocity(62.85)
             .yVelocity(39);
     public static Follower createFollower(HardwareMap hardwareMap) {
-        return new FollowerBuilder(followerConstants, hardwareMap)
+        Follower f = new FollowerBuilder(followerConstants, hardwareMap)
                 .pinpointLocalizer(localizer)
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(mecanumConstants)
                 .build();
+        f.activateDrive();
+        f.activateHeading();
+        return f;
     }
 }

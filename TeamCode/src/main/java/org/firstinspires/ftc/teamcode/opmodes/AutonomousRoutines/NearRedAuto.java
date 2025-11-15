@@ -8,78 +8,52 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "NearRedAuto", group = "Autos", preselectTeleOp = "Teleop")
+@Autonomous(name = "NearRedAut0", group = "Autos", preselectTeleOp = "Teleop")
 public class NearRedAuto extends DecodeAutos{
-    public PathChain GoToShoot;
-    public PathChain GoToIntake;
-    public PathChain Intake;
-    public PathChain GoToShoot2;
-    public PathChain GoOffLine;
-
+    public PathChain movetoshoot;
+    public PathChain turntointake;
+    public PathChain gointake;
     public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
-        GoToShoot = follower
+        movetoshoot = follower.pathBuilder()
+                .setGlobalDeceleration()
+                .addPath(new BezierLine(new Pose(123.2,123.2), new Pose(84,84)))
+                .setLinearHeadingInterpolation(Math.toRadians(36), Math.toRadians(45))
+                .build();
+        turntointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(56.000, 9.000), new Pose(59.300, 18.000))
+                        new BezierLine(new Pose(84.000, 84.000), new Pose(100.000, 84.000))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(106))
+                .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(-180))
+
                 .build();
 
-        GoToIntake = follower
+        gointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(59.300, 18.000), new Pose(47.500, 36.000))
+                        new BezierLine(new Pose(100.000, 84.000), new Pose(125, 84.000))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(106), Math.toRadians(0))
-                .build();
-
-        Intake = follower
-                .pathBuilder()
-                .addPath(
-                        new BezierLine(new Pose(47.500, 36.000), new Pose(13.500, 36.000))
-                )
-                .setTangentHeadingInterpolation()
+                .setConstantHeadingInterpolation(Math.toRadians(-180))
                 .addParametricCallback(0, () -> {
-                    follower.setMaxPower(.2);
-                    intake.start();
-                    belt.start();
+                    follower.setMaxPower(0.5);
+                    intake.setPower(1);
+                    belt.setPower(-0.75);
                 })
-                .addParametricCallback(1, () -> {
-                    follower.setMaxPower(1);
-                    intake.stop();
-                    belt.stop();
-                })
-                .setReversed()
                 .build();
-
-        GoToShoot2 = follower
-                .pathBuilder()
-                .addPath(
-                        new BezierLine(new Pose(13.500, 36.000), new Pose(59.300, 18.000))
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(106))
-                .build();
-
-        GoOffLine = follower
-                .pathBuilder()
-                .addPath(
-                        new BezierLine(new Pose(59.300, 18.000), new Pose(56.090, 60.404))
-                )
-                .setTangentHeadingInterpolation()
-                .build();
+        follower.setStartingPose(new Pose(123.2, 123.2, Math.toRadians(36)));
 
     }
 
+
+
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
-                drive.FollowPath(GoToShoot, true),
-                shoot(),
-                drive.FollowPath(GoToIntake, true),
-                drive.FollowPath(Intake, true),
-                drive.FollowPath(GoToShoot2, true),
-                drive.FollowPath(GoOffLine, true)
+                drive.FollowPath(movetoshoot, true),
+                shooter.shootThreeBallsNear(),
+                drive.FollowPath(turntointake, true),
+                drive.FollowPath(gointake, true)
         );
     }
 }
