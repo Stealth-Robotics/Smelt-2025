@@ -8,6 +8,8 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+
 @Autonomous(name = "NearRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class NearRedAuto extends DecodeAutos{
     public PathChain movetoshoot;
@@ -17,6 +19,9 @@ public class NearRedAuto extends DecodeAutos{
     public PathChain turntointakeagain;
     public PathChain gointakeagain;
     public PathChain gotoshootthirdtime;
+    public PathChain turntointakethirdtime;
+    public PathChain gointakethirdtime;
+    public PathChain gotoshootfourthtime;
     public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
@@ -24,11 +29,17 @@ public class NearRedAuto extends DecodeAutos{
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(123.2,123.2), new Pose(84,84)))
                 .setLinearHeadingInterpolation(Math.toRadians(36), Math.toRadians(39))
+                .addParametricCallback(0, () -> {
+                    belt.setPower(0.75);
+                })
+                .addParametricCallback(0.5, () -> {
+                    shooter.setRpm(2550);
+                })
                 .build();
         turntointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84.000, 84.000), new Pose(84, 64))
+                        new BezierLine(new Pose(84.000, 84.000), new Pose(84, 67))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(39), Math.toRadians(180))
 
@@ -37,25 +48,29 @@ public class NearRedAuto extends DecodeAutos{
         gointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84, 64), new Pose(125, 64))
+                        new BezierLine(new Pose(84, 67), new Pose(125, 58))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
-                    follower.setMaxPower(0.5);
+                    follower.setMaxPower(1);
                     intake.setPower(1);
                     belt.setPower(-0.75);
+                    shooter.setRpm(-500);
                 })
                 .build();
         gotoshootagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(125.000, 64), new Pose(84.000, 84))
+                        new BezierLine(new Pose(125.000, 58), new Pose(84.000, 84))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
-                    intake.setPower(0);
-                    belt.setPower(0);
+                    intake.setPower(0.3);
+                    belt.setPower(0.75);
+                })
+                .addParametricCallback(0.3, () -> {
+                    shooter.setRpm(2550);
                 })
                 .build();
         turntointakeagain = follower
@@ -73,9 +88,10 @@ public class NearRedAuto extends DecodeAutos{
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
-                    follower.setMaxPower(0.5);
+                    follower.setMaxPower(1);
                     intake.setPower(1);
                     belt.setPower(-0.75);
+                    shooter.setRpm(-500);
                 })
                 .build();
 
@@ -86,11 +102,52 @@ public class NearRedAuto extends DecodeAutos{
                 )
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
-                    intake.setPower(0);
-                    belt.setPower(0);
+                    intake.setPower(0.3);
+                    belt.setPower(0.75);
+                })
+                .addParametricCallback(0.3, () -> {
+                    shooter.setRpm(2550);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .build();
+        turntointakethirdtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(84.000, 84.000), new Pose(84.000, 16))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(39), Math.toRadians(180))
+                .build();
+
+        gointakethirdtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(84.000, 16), new Pose(125.000, 16))
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(180))
+                .addParametricCallback(0, () -> {
+                    follower.setMaxPower(1);
+                    intake.setPower(1);
+                    belt.setPower(-0.75);
+                    shooter.setRpm(-500);
+                })
+                .build();
+
+        gotoshootfourthtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(125.000, 16), new Pose(84.000, 84.000))
+                )
+                .addParametricCallback(0, () -> {
+                    follower.setMaxPower(1);
+                    intake.setPower(0.3);
+                    belt.setPower(0.75);
+                })
+                .addParametricCallback(0.3, () -> {
+                    shooter.setRpm(2550);
+                })
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
+                .build();
+
         follower.setStartingPose(new Pose(123.2, 123.2, Math.toRadians(36)));
 
     }
@@ -108,6 +165,10 @@ public class NearRedAuto extends DecodeAutos{
                 drive.FollowPath(turntointakeagain, true),
                 drive.FollowPath(gointakeagain, true),
                 drive.FollowPath(gotoshootthirdtime, true),
+                shooter.shootThreeBallsNear(),
+                drive.FollowPath(turntointakethirdtime, true),
+                drive.FollowPath(gointakethirdtime, true),
+                drive.FollowPath(gotoshootfourthtime, true),
                 shooter.shootThreeBallsNear()
         );
     }

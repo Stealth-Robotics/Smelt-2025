@@ -32,7 +32,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double currentRpm = 0;
     private final ElapsedTime shootTimer = new ElapsedTime();
     public static final double MAX_RPM = 4500;
-    public static final double MIN_RPM = 500;
+    public static final double MIN_RPM = -4000;
     private double far_shot_pos = 0.24;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
@@ -87,20 +87,20 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))));
     }
     public Command shootThreeBallsNear(){
-        return new InstantCommand(() -> beltSubsystem.setPower(0.5)).
-                andThen(new InstantCommand(() -> setRpm(-100)).
-                andThen(new WaitCommand(1000)).
-                andThen(new InstantCommand(() -> setRpm(2500))).
-                andThen(new InstantCommand(() -> setHoodDown())).
-                andThen(new WaitUntilCommand(() -> isShootReady(2500))).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.35))).
+        return //InstantCommand(() -> beltSubsystem.setPower(0.5)).
+//                andThen(new InstantCommand(() -> setRpm(-100)).
+//                andThen(new WaitCommand(1000)).
+                //andThen(new InstantCommand(() -> setRpm(2500))).
+                new InstantCommand(() -> setHoodDown()).
+                andThen(new WaitUntilCommand(() -> isShootReady(2550))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.4))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
                 andThen(new WaitCommand(2000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> setRpm(-1000))).
                 andThen(new WaitCommand(500)).
-                andThen(new InstantCommand(() -> setRpm(0))));
+                andThen(new InstantCommand(() -> setRpm(0)));
     }
     public Command shootThreeBallsFar(){
         return new InstantCommand(() -> beltSubsystem.setPower(0.5)).
