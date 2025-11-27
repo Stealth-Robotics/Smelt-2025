@@ -40,11 +40,11 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double VELOCITY_TOLERANCE_HIGH = 100;
     private double MIN_SHOOT_TIME_MS = 500;
     private double MAX_SHOOT_TIME_MS = 5000;
-    public static final double KP = 40;//old: 40
+    public static final double KP = 2;//old: 40
     public static final double KI = 0;//old: 0.02
-    public static final double KD = 0.7;//old: 0.7
+    public static final double KD = 0;//old: 0.7
 
-    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD, 1);
+    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD,13);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         this.beltSubsystem = new BeltSubsystem(hardwareMap);
         this.intakeSubsystem = new IntakeSubsystem(hardwareMap);
@@ -53,7 +53,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
 
-        shooterMotor1.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterMotor1.setDirection(DcMotorEx.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
 
         shooterMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

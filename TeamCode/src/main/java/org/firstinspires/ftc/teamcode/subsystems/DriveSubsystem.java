@@ -81,10 +81,10 @@ public class DriveSubsystem extends StealthSubsystem {
     }
     public void setAlliance(boolean isAllianceBlue){
         if(isAllianceBlue){
-            offset = 2.5 ;
+            offset = -2.5 ;
         }
         else{
-            offset = -2.5;
+            offset = 2.5;
         }
     }
     public void setPose(Pose pose){
@@ -101,7 +101,7 @@ public class DriveSubsystem extends StealthSubsystem {
         if (llPose != null) {
             // Calculate the turn power needed to center the target.
             double output = getScaledTxOutput(llPose.getX() + offset, tolerance);
-            turn = -output;
+            turn = output;
         } else {
             // If the target is lost, reset the PID controller to prevent integral windup.
             headingController.reset();
@@ -119,7 +119,7 @@ public class DriveSubsystem extends StealthSubsystem {
                 // Calculate the turn power needed to center the target.
                 double output = getScaledTxOutput(llPose.getX() + offset , AUTO_AIM_TOLERANCE);
                 //The output is applied to the rotation power (note: may need to be inverted).
-                turn = -output;
+                turn = output;
 
             } else {
                 // If the target is lost, reset the PID controller to prevent integral windup.

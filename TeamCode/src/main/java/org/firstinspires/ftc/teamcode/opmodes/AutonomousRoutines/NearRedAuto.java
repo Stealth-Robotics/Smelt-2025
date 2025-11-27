@@ -39,7 +39,7 @@ public class NearRedAuto extends DecodeAutos{
         turntointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84.000, 84.000), new Pose(84, 67))
+                        new BezierLine(new Pose(84.000, 84.000), new Pose(84, 70))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(39), Math.toRadians(180))
 
@@ -48,7 +48,7 @@ public class NearRedAuto extends DecodeAutos{
         gointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84, 67), new Pose(125, 58))
+                        new BezierLine(new Pose(84, 70), new Pose(125, 55))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
@@ -61,7 +61,7 @@ public class NearRedAuto extends DecodeAutos{
         gotoshootagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(125.000, 58), new Pose(84.000, 84))
+                        new BezierLine(new Pose(125.000, 55), new Pose(84.000, 84))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .addParametricCallback(0, () -> {
