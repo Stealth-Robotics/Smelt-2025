@@ -22,13 +22,11 @@ public class DecodeAutos extends StealthOpMode {
 
     @Override
     public void initialize() {
-        belt = new BeltSubsystem(hardwareMap);
-        camera = new CameraSubsystem(hardwareMap);
         drive = new DriveSubsystem(hardwareMap, telemetry);
-        intake = new IntakeSubsystem(hardwareMap);
         shooter = new ShooterSubsystem(hardwareMap);
+        intake = shooter.getIntakeSubsystem();
+        belt = shooter.getBeltSubsystem();
         drive.resetHeading();
-
     }
 
 

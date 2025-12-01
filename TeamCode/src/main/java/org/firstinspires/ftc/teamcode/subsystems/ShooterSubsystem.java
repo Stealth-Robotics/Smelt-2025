@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,6 +23,7 @@ import org.stealthrobotics.library.StealthSubsystem;
 
 @Config
 public class ShooterSubsystem extends StealthSubsystem {
+    private final TelemetryManager telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
     private final BeltSubsystem beltSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final DcMotorEx shooterMotor1;
@@ -33,6 +36,9 @@ public class ShooterSubsystem extends StealthSubsystem {
     private final ElapsedTime shootTimer = new ElapsedTime();
     public static final double MAX_RPM = 4500;
     public static final double MIN_RPM = -4000;
+    private double far_rpm = 3500;
+    private double near_rpm = 2600;
+    private double cycle_rpm = 500;
     private double far_shot_pos = 0.24;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
@@ -40,14 +46,21 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double VELOCITY_TOLERANCE_HIGH = 100;
     private double MIN_SHOOT_TIME_MS = 500;
     private double MAX_SHOOT_TIME_MS = 5000;
-    public static final double KP = 2;//old: 40
+    boolean isFarShot = false;
+    boolean isNearShot = false;
+    boolean isCycleShot = false;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
+    private double setRpms = 0;
+    public static final double KP = 0.1;//old: 40
     public static final double KI = 0;//old: 0.02
     public static final double KD = 0;//old: 0.7
 
-    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD,13);
+    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD,15);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         this.beltSubsystem = new BeltSubsystem(hardwareMap);
         this.intakeSubsystem = new IntakeSubsystem(hardwareMap);
+
 
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
@@ -72,6 +85,16 @@ public class ShooterSubsystem extends StealthSubsystem {
     public void update(){
         updateAverageRpm();
     }
+
+    public BeltSubsystem getBeltSubsystem() {
+        return this.beltSubsystem;
+    }
+
+    public IntakeSubsystem getIntakeSubsystem() {
+        return this.intakeSubsystem;
+    }
+
+
     public boolean isShootReady(double targetRpm){
         double difference = Math.abs(currentRpm - targetRpm);
         double curMs = shootTimer.milliseconds();
@@ -86,6 +109,7 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new WaitUntilCommand(() -> isShootReady(3500))).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))));
     }
+
     public Command shootThreeBallsNear(){
         return //InstantCommand(() -> beltSubsystem.setPower(0.5)).
 //                andThen(new InstantCommand(() -> setRpm(-100)).
@@ -156,16 +180,45 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo.setPosition(currentPosition);
     }
 
+    public void setRpmFar(){
+        isFarShot = !isFarShot;
+        if (isFarShot) {
+            setRpm(far_rpm);
+        }
+        else if(!isFarShot){
+            setRpm(0);
+        }
+    }
+    public void setRpmNear(){
+        isNearShot =!isNearShot;
+        if (isNearShot) {
+            setRpm(near_rpm);
+        }
+        else if(!isNearShot){
+            setRpm(0);
+        }
+    }
+    public void setRpmCycle(){
+        isCycleShot =!isCycleShot;
+        if (isCycleShot) {
+            setRpm(cycle_rpm);
+        }
+        else if(!isCycleShot){
+            setRpm(0);
+        }
+    }
     public void setRpm(double rpm) {
         // Clamp the RPM to the allowable min/max range to prevent motor damage or unexpected behavior.
         if (rpm > MAX_RPM) {
             rpm = MAX_RPM;
-        } else if (rpm > 0 && rpm < MIN_RPM) {
+        } else if (rpm < MIN_RPM) {
             // If setting a non-zero RPM, ensure it meets the minimum operational speed
             rpm = MIN_RPM;
         }
-
-
+        if (rpm == 0){
+            return;
+        }
+        setRpms = 3500;
         // Convert desired RPM to encoder ticks per second, which is the unit required by DcMotorEx.setVelocity().
         double ticksPerSecond = rpm * TICKS_PER_REV / 60;
         shooterMotor1.setVelocity(ticksPerSecond);
@@ -196,8 +249,15 @@ public class ShooterSubsystem extends StealthSubsystem {
     @Override
     public void periodic() {
         update();
+        telemetryM.addData("setRpms", setRpms);
+        dashboardTelemetry.addData("setRpms", setRpms);
+        dashboardTelemetry.addData("RPM", getCurrentRpm());
+        dashboardTelemetry.update();
         telemetry.addData("isShootReady", isShootReady(3500));
-        telemetry.addData("RPM", getCurrentRpm());
+        telemetry.addData("AverageRpm", getCurrentRpm());
+        telemetry.addData("Motor1Rpm", shooterMotor1.getVelocity() / TICKS_PER_REV * 60);
+        telemetry.addData("Motor2Rpm", shooterMotor2.getVelocity() / TICKS_PER_REV * 60);
         telemetry.addData("currentPos", currentPosition);
+        telemetryM.update(telemetry);
     }
 }

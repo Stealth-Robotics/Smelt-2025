@@ -39,7 +39,6 @@ public class DriveSubsystem extends StealthSubsystem {
     private final TelemetryManager telemetryM;
     private double headingOffset = 0.0;
     private final CameraSubsystem cameraSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
     public static final double MAX_ROTATION_POWER = 0.90;
 
     public static final double MIN_ROTATION_POWER = 0.068 ;
@@ -51,7 +50,6 @@ public class DriveSubsystem extends StealthSubsystem {
     public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
-        this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
         follower.startTeleOpDrive(true);
         Drawing.init();
         this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
