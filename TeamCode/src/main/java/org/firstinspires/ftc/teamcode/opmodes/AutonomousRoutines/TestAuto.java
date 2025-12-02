@@ -21,12 +21,12 @@ public class TestAuto extends StealthOpMode{
     BeltSubsystem beltSubsystem;
     IntakeSubsystem intakeSubsystem;
     CameraSubsystem cameraSubsystem;
-    private double top_pos = 0;
-    private double bottom_pos = 0.65;
+//    private double top_pos = 0;
+//    private double bottom_pos = 0.65;
     static PathChain Path1;
     @Override
     public void initialize() {
-        driveSubsystem = new DriveSubsystem(hardwareMap, telemetry);
+        driveSubsystem = new DriveSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         beltSubsystem = new BeltSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);

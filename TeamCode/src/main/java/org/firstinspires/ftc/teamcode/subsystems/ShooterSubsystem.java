@@ -2,14 +2,19 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
+import androidx.core.math.MathUtils;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -52,15 +57,10 @@ public class ShooterSubsystem extends StealthSubsystem {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private double setRpms = 0;
-    public static final double KP = 0.1;//old: 40
-    public static final double KI = 0;//old: 0.02
-    public static final double KD = 0;//old: 0.7
-
-    public PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(KP, KI, KD,15);
+    public static final PIDFController ShooterController = new PIDFController(0.009, 0.0001, 0.0001, 0.00044);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         this.beltSubsystem = new BeltSubsystem(hardwareMap);
         this.intakeSubsystem = new IntakeSubsystem(hardwareMap);
-
 
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
@@ -69,13 +69,9 @@ public class ShooterSubsystem extends StealthSubsystem {
         shooterMotor1.setDirection(DcMotorEx.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
 
-        shooterMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooterMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooterMotor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterMotor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        shooterMotor1.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-        //shooterMotor1.setPositionPIDFCoefficients(5.0);
-        shooterMotor2.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
-//        shooterMotor2.setPositionPIDFCoefficients(5.0);
         // Initialize velocity readers to get filtered RPM values from the motors.
         motorVelocityReader1 = new MotorVelocityReader(shooterMotor1, TICKS_PER_REV);
         motorVelocityReader2 = new MotorVelocityReader(shooterMotor2, TICKS_PER_REV);
@@ -212,22 +208,22 @@ public class ShooterSubsystem extends StealthSubsystem {
         if (rpm > MAX_RPM) {
             rpm = MAX_RPM;
         } else if (rpm < MIN_RPM) {
-            // If setting a non-zero RPM, ensure it meets the minimum operational speed
             rpm = MIN_RPM;
         }
-        if (rpm == 0){
-            return;
-        }
-        setRpms = 3500;
+        setRpms = rpm;
         // Convert desired RPM to encoder ticks per second, which is the unit required by DcMotorEx.setVelocity().
         double ticksPerSecond = rpm * TICKS_PER_REV / 60;
-        shooterMotor1.setVelocity(ticksPerSecond);
-        shooterMotor2.setVelocity(ticksPerSecond);
+        ShooterController.reset();
+        ShooterController.setSetPoint(ticksPerSecond);
         resetVelocityReaders();
     }
 
     public double getCurrentRpm() {
-        return currentRpm;
+        return ((((Math.abs(shooterMotor1.getVelocity()) + Math.abs(shooterMotor2.getVelocity())) / 2.0) / TICKS_PER_REV) * 60);
+    }
+
+    public double getAvgTicks(){
+        return (shooterMotor1.getVelocity()+shooterMotor2.getVelocity())/2;
     }
 
     public double getMotorRpms() {
@@ -249,15 +245,23 @@ public class ShooterSubsystem extends StealthSubsystem {
     @Override
     public void periodic() {
         update();
-        telemetryM.addData("setRpms", setRpms);
+        double calculatedPower= ShooterController.calculate(-getAvgTicks());
+        dashboardTelemetry.addData("AVG TICKS:", -getAvgTicks());
+        dashboardTelemetry.addData("calculatedPower", calculatedPower);
+        calculatedPower = MathUtils.clamp(calculatedPower, -1, 1);
         dashboardTelemetry.addData("setRpms", setRpms);
-        dashboardTelemetry.addData("RPM", getCurrentRpm());
+        dashboardTelemetry.addData("CurrentRPM", getCurrentRpm());
+        dashboardTelemetry.addData("isFarShot", isFarShot);
         dashboardTelemetry.update();
-        telemetry.addData("isShootReady", isShootReady(3500));
-        telemetry.addData("AverageRpm", getCurrentRpm());
-        telemetry.addData("Motor1Rpm", shooterMotor1.getVelocity() / TICKS_PER_REV * 60);
-        telemetry.addData("Motor2Rpm", shooterMotor2.getVelocity() / TICKS_PER_REV * 60);
-        telemetry.addData("currentPos", currentPosition);
+        telemetryM.addData("setRpms", setRpms);
+        telemetryM.addData("CurrentRPM", getCurrentRpm());
+        telemetryM.addData("isShootReady", isShootReady(3500));
+        telemetryM.addData("AverageRpm", getCurrentRpm());
+        dashboardTelemetry.addData("Motor1Rpm", Math.abs(shooterMotor1.getVelocity() / TICKS_PER_REV * 60));
+        dashboardTelemetry.addData("Motor2Rpm", Math.abs(shooterMotor2.getVelocity() / TICKS_PER_REV * 60));
+        telemetryM.addData("currentPos", currentPosition);
+        shooterMotor1.setPower(calculatedPower);
+        shooterMotor2.setPower(calculatedPower);
         telemetryM.update(telemetry);
     }
 }

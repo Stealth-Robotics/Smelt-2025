@@ -40,7 +40,7 @@ public class Teleop extends StealthOpMode {
     public void initialize() {
 
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
-        drive = new DriveSubsystem(hardwareMap, telemetry);
+        drive = new DriveSubsystem(hardwareMap);
 
         intakeSubsystem = shooterSubsystem.getIntakeSubsystem();
         beltSubsystem = shooterSubsystem.getBeltSubsystem();

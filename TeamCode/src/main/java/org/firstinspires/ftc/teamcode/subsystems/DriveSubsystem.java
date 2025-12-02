@@ -47,7 +47,7 @@ public class DriveSubsystem extends StealthSubsystem {
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
     public static double AUTO_AIM_TOLERANCE = 0.2;
-    public DriveSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
+    public DriveSubsystem(HardwareMap hardwareMap) {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
         follower.startTeleOpDrive(true);
@@ -126,7 +126,7 @@ public class DriveSubsystem extends StealthSubsystem {
         }
 
         follower.setTeleOpDrive(y, x, turn,  this.robotCentric);
-        telemetry.addData("TURN:", turn);
+        telemetryM.addData("TURN:", turn);
         follower.update();
     }
     public Command  FollowPath(PathChain path, boolean holdPoint){
@@ -176,12 +176,12 @@ public class DriveSubsystem extends StealthSubsystem {
 
     @Override
     public void periodic() {
-        telemetry.addData("Raw Heading", getHeading());
-        telemetry.addData("Heading", Math.toDegrees(getHeading()));
-        telemetry.addData("isRobotCentric", robotCentric);
-        telemetry.addData("X Pose", follower.getPose().getX());
-        telemetry.addData("Y Pose", follower.getPose().getY());
-        telemetry.addData("offset", offset);
+        telemetryM.addData("Raw Heading", getHeading());
+        telemetryM.addData("Heading", Math.toDegrees(getHeading()));
+        telemetryM.addData("isRobotCentric", robotCentric);
+        telemetryM.addData("X Pose", follower.getPose().getX());
+        telemetryM.addData("Y Pose", follower.getPose().getY());
+        telemetryM.addData("offset", offset);
         draw();
         follower.update();
     }
