@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -33,6 +34,7 @@ public class Teleop extends StealthOpMode {
     private double far_shot_rpm = 3500;
     private double near_shot_rpm = 2600;
     private double cycle_rpm = 500;
+    private double reverse_rpm = -1500;
     private double offset;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -48,6 +50,8 @@ public class Teleop extends StealthOpMode {
         driveGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
 
+        shooterSubsystem.setShootServoPosition(0.15);
+        shooterSubsystem.setRpm(0);
         register(drive);
 
         telemetry.addData("GamepadRaw X", driveGamepad.getLeftX());
@@ -75,8 +79,11 @@ public class Teleop extends StealthOpMode {
         operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> drive.setAlliance(false));
 
 
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPosition(bottom_pos));
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.setPosition(far_shot_pos));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.hoodSetPosition(bottom_pos));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.hoodSetPosition(far_shot_pos));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(() -> shooterSubsystem.setBlockerUp());
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> shooterSubsystem.setBlockerDown());
+
 
         driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
 
@@ -85,11 +92,14 @@ public class Teleop extends StealthOpMode {
         intake.whenActive(() -> intakeSubsystem.setPower(intakeSupplier.getAsDouble()));
         intake.whenInactive(() -> intakeSubsystem.stop());
 
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).whenPressed(() -> shooterSubsystem.setRpmFar());
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).whenPressed(() -> shooterSubsystem.setRpmNear());
-        operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(() -> shooterSubsystem.setRpmCycle());
-//        DoubleSupplier shooterFarSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0) - (operatorGamepad.getButton(GamepadKeys.Button.A) ? 1 : 0));
-//        Trigger shooterFar = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)).or(new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.A))));
+        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).whenPressed(shooterSubsystem.setRpmFar());
+        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).whenPressed(shooterSubsystem.setRpmNear());
+        operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(shooterSubsystem.setRpmCycle());
+
+        Trigger shooterReverse = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP));
+        shooterReverse.whenActive(shooterSubsystem.setReverseRpm(reverse_rpm));
+        shooterReverse.whenInactive(shooterSubsystem.setReverseRpm(0));
+
 //        shooterFar.whenActive(() -> shooterSubsystem.setRpm(shooterFarSupplier.getAsDouble() * far_shot_rpm));
         //shooterFar.whenInactive(() -> shooterSubsystem.setRpm(0));
 

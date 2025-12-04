@@ -7,6 +7,7 @@ import androidx.core.math.MathUtils;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -34,6 +35,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     private final DcMotorEx shooterMotor1;
     private final DcMotorEx shooterMotor2;
     private final Servo hoodServo;
+    private final Servo hatServo;
+    private final Servo shootServo;
     private final MotorVelocityReader motorVelocityReader1;
     private final MotorVelocityReader motorVelocityReader2;
     private static final double TICKS_PER_REV = 28;
@@ -44,6 +47,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double far_rpm = 3500;
     private double near_rpm = 2600;
     private double cycle_rpm = 500;
+    private double reverse_rpm = -1500;
     private double far_shot_pos = 0.24;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
@@ -65,6 +69,8 @@ public class ShooterSubsystem extends StealthSubsystem {
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
+        hatServo = hardwareMap.get(Servo.class, "hatServo");
+        shootServo = hardwareMap.get(Servo.class, "shootServo");
 
         shooterMotor1.setDirection(DcMotorEx.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
@@ -97,11 +103,14 @@ public class ShooterSubsystem extends StealthSubsystem {
         if (curMs < MIN_SHOOT_TIME_MS) {
             return false;
         }
+
+//        return ShooterController.atSetPoint();
+
         return (difference <= VELOCITY_TOLERANCE_HIGH||curMs > MAX_SHOOT_TIME_MS);
     }
     public Command shootOneBallFar(){
         return  new InstantCommand(() -> setRpm(3500)).
-                andThen(new InstantCommand(() -> setPosition(far_shot_pos)).
+                andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos)).
                 andThen(new WaitUntilCommand(() -> isShootReady(3500))).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))));
     }
@@ -126,7 +135,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         return new InstantCommand(() -> beltSubsystem.setPower(0.5)).
                 andThen(new WaitCommand(600)).
                 andThen(new InstantCommand(() -> setRpm(3500))).
-                andThen(new InstantCommand(() -> setPosition(far_shot_pos))).
+                andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos))).
                 andThen(new WaitUntilCommand(() -> isShootReady(3500))).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
                 andThen(new WaitCommand(100)).
@@ -146,62 +155,87 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new InstantCommand(() -> setRpm(0)));
     }
 
-    public void setPosition(double position) {
+    public void hoodSetPosition(double position) {
         hoodServo.setPosition(position);
-        currentPosition = position;
+        hoodCurrentPosition = position;
     }
-    public void setHoodUp(){
-        setPosition(top_pos);
+    public void blockerSetPosition(double position){
+        hatServo.setPosition(position);
+        blockerCurrentPosition = position;
     }
-    public void setHoodDown(){
-        setPosition(bottom_pos);
+    public void setShootServoPosition(double position){
+        shootServo.setPosition(position);
+        shootCurrentPosition = position;
     }
-    private double currentPosition = 0;
-    public void changePositionUp(){
-        if (currentPosition >= top_pos){
-            currentPosition -= 0.01;
-        }
-        else{
-            currentPosition = top_pos;
-        }
-        hoodServo.setPosition(currentPosition);
+    public void setBlockerUp(){
+        blockerSetPosition(0.41);
     }
-    public void changePositionDown(){
-        if (currentPosition <= bottom_pos){
-            currentPosition += 0.01;
-        }
-        else{
-            currentPosition = bottom_pos;
-        }
-        hoodServo.setPosition(currentPosition);
+    public void setBlockerDown(){
+        blockerSetPosition(0.267);
+    }
+    public Command moveShootServoSide(double RPM){
+        return new  WaitUntilCommand(() -> isShootReady(RPM)).andThen(
+                new InstantCommand(() -> setShootServoPosition(0))
+        );
+    }
+    public void moveShootServoUp(){
+        setShootServoPosition(0.15);
     }
 
-    public void setRpmFar(){
-        isFarShot = !isFarShot;
-        if (isFarShot) {
-            setRpm(far_rpm);
-        }
-        else if(!isFarShot){
-            setRpm(0);
-        }
+    public void setHoodUp(){
+        hoodSetPosition(far_shot_pos);
     }
-    public void setRpmNear(){
-        isNearShot =!isNearShot;
-        if (isNearShot) {
-            setRpm(near_rpm);
-        }
-        else if(!isNearShot){
-            setRpm(0);
-        }
+    public void setHoodDown(){
+        hoodSetPosition(bottom_pos);
     }
-    public void setRpmCycle(){
-        isCycleShot =!isCycleShot;
-        if (isCycleShot) {
-            setRpm(cycle_rpm);
+    private double hoodCurrentPosition = 0;
+    private double blockerCurrentPosition = 0;
+    private double shootCurrentPosition = 0;
+    public void changePositionUp(){
+        if (hoodCurrentPosition >= top_pos){
+            hoodCurrentPosition -= 0.01;
         }
-        else if(!isCycleShot){
-            setRpm(0);
+        else{
+            hoodCurrentPosition = top_pos;
         }
+        hoodServo.setPosition(hoodCurrentPosition);
+    }
+    public void changePositionDown(){
+        if (hoodCurrentPosition <= bottom_pos){
+            hoodCurrentPosition += 0.01;
+        }
+        else{
+            hoodCurrentPosition = bottom_pos;
+        }
+        hoodServo.setPosition(hoodCurrentPosition);
+    }
+
+
+    public Command setRpmFar(){
+        return new InstantCommand(() -> isFarShot =!isFarShot).andThen( new ConditionalCommand(
+                new InstantCommand(() -> setHoodUp()).andThen(new InstantCommand(() -> setRpm(far_rpm))).andThen(moveShootServoSide(far_rpm)),
+                new InstantCommand(() -> setRpm(0)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                () -> isFarShot));
+
+    }
+    public Command setRpmNear(){
+        return new InstantCommand(() -> isNearShot =!isNearShot).andThen( new ConditionalCommand(
+                new InstantCommand(() -> setHoodDown()).andThen(new InstantCommand(() -> setRpm(near_rpm))).andThen(moveShootServoSide(near_rpm)),
+                new InstantCommand(() -> setRpm(0)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                () -> isNearShot));
+    }
+
+    public Command setRpmCycle(){
+        return new InstantCommand(() -> isCycleShot =!isCycleShot).andThen( new ConditionalCommand(
+                new InstantCommand(() -> setHoodUp()).andThen(new InstantCommand(() -> setRpm(cycle_rpm))).andThen(moveShootServoSide(cycle_rpm)),
+                new InstantCommand(() -> setRpm(0)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                () -> isCycleShot));
+    }
+    public Command setReverseRpm(double RPM){
+        return new ConditionalCommand(
+                new InstantCommand(() -> setShootServoPosition(0)).andThen(new InstantCommand(() -> setRpm(reverse_rpm))),
+                new InstantCommand(() -> setRpm(0)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                () -> RPM == reverse_rpm);
     }
     public void setRpm(double rpm) {
         // Clamp the RPM to the allowable min/max range to prevent motor damage or unexpected behavior.
@@ -255,11 +289,15 @@ public class ShooterSubsystem extends StealthSubsystem {
         dashboardTelemetry.update();
         telemetryM.addData("setRpms", setRpms);
         telemetryM.addData("CurrentRPM", getCurrentRpm());
+        telemetryM.addData("CurrentRpmTest", currentRpm);
         telemetryM.addData("isShootReady", isShootReady(3500));
         telemetryM.addData("AverageRpm", getCurrentRpm());
         dashboardTelemetry.addData("Motor1Rpm", Math.abs(shooterMotor1.getVelocity() / TICKS_PER_REV * 60));
         dashboardTelemetry.addData("Motor2Rpm", Math.abs(shooterMotor2.getVelocity() / TICKS_PER_REV * 60));
-        telemetryM.addData("currentPos", currentPosition);
+        telemetryM.addData("hoodCurrentPos", hoodCurrentPosition);
+        telemetryM.addData("hatCurrentPos", blockerCurrentPosition);
+        telemetryM.addData("shootServoCurrentPos", shootCurrentPosition);
+        telemetryM.addData("isFarShot", isFarShot);
         shooterMotor1.setPower(calculatedPower);
         shooterMotor2.setPower(calculatedPower);
         telemetryM.update(telemetry);
