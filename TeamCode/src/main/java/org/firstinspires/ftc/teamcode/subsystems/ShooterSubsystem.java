@@ -118,20 +118,15 @@ public class ShooterSubsystem extends StealthSubsystem {
     }
 
     public Command shootThreeBallsNear(){
-        return //InstantCommand(() -> beltSubsystem.setPower(0.5)).
-//                andThen(new InstantCommand(() -> setRpm(-100)).
-//                andThen(new WaitCommand(1000)).
-                //andThen(new InstantCommand(() -> setRpm(2500))).
-                new InstantCommand(() -> setHoodDown()).
-                andThen(new WaitUntilCommand(() -> isShootReady(2550))).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.4))).
+        return  new InstantCommand(() -> setHoodDown()).
+                andThen(new WaitUntilCommand(() -> isShootReady(near_rpm)).
+                andThen(moveShootServoSide(near_rpm)).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
-                andThen(new WaitCommand(2000)).
+                andThen(new WaitCommand(2500)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
-                andThen(new InstantCommand(() -> setRpm(-1000))).
-                andThen(new WaitCommand(500)).
-                andThen(new InstantCommand(() -> setRpm(0)));
+                andThen(new InstantCommand(() -> setRpm(0))));
     }
     public Command shootThreeBallsFar(){
         return new InstantCommand(() -> beltSubsystem.setPower(0.5)).
@@ -186,7 +181,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         );
     }
     public void moveShootServoUp(){
-        setShootServoPosition(0.15);
+        setShootServoPosition(0.12);
         setLedColor(0.28);
     }
 

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.AutonomousRoutines;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -29,11 +31,8 @@ public class NearRedAuto extends DecodeAutos{
                 .setGlobalDeceleration()
                 .addPath(new BezierLine(new Pose(123.2,123.2), new Pose(84,84)))
                 .setLinearHeadingInterpolation(Math.toRadians(36), Math.toRadians(39))
-                .addParametricCallback(0, () -> {
-                    belt.setPower(0.75);
-                })
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2550);
+                    shooter.setRpm(2600);
                 })
                 .build();
         turntointake = follower
@@ -48,29 +47,28 @@ public class NearRedAuto extends DecodeAutos{
         gointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84, 70), new Pose(125, 55))
+                        new BezierLine(new Pose(84, 70), new Pose(127, 55))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
-                    follower.setMaxPower(1);
+                    shooter.setShootServoPosition(0.12);
+                    follower.setMaxPower(0.5);
                     intake.setPower(1);
                     belt.setPower(-0.75);
-                    shooter.setRpm(-500);
                 })
                 .build();
         gotoshootagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(125.000, 55), new Pose(84.000, 84))
+                        new BezierLine(new Pose(127, 55), new Pose(84.000, 84))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
                     intake.setPower(0.3);
-                    belt.setPower(0.75);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2550);
+                    shooter.setRpm(2600);
                 })
                 .build();
         turntointakeagain = follower
@@ -88,10 +86,10 @@ public class NearRedAuto extends DecodeAutos{
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
+                    shooter.setShootServoPosition(0.12);
                     follower.setMaxPower(1);
                     intake.setPower(1);
                     belt.setPower(-0.75);
-                    shooter.setRpm(-500);
                 })
                 .build();
 
@@ -103,10 +101,9 @@ public class NearRedAuto extends DecodeAutos{
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
                     intake.setPower(0.3);
-                    belt.setPower(0.75);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2550);
+                    shooter.setRpm(2600);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .build();
@@ -125,10 +122,10 @@ public class NearRedAuto extends DecodeAutos{
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
+                    shooter.setShootServoPosition(0.12);
                     follower.setMaxPower(1);
                     intake.setPower(1);
                     belt.setPower(-0.75);
-                    shooter.setRpm(-500);
                 })
                 .build();
 
@@ -140,10 +137,9 @@ public class NearRedAuto extends DecodeAutos{
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
                     intake.setPower(0.3);
-                    belt.setPower(0.75);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2550);
+                    shooter.setRpm(2600);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(39))
                 .build();
@@ -156,10 +152,12 @@ public class NearRedAuto extends DecodeAutos{
 
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setShootServoPosition(0.12)),
                 drive.FollowPath(movetoshoot, true),
                 shooter.shootThreeBallsNear(),
                 drive.FollowPath(turntointake, true),
                 drive.FollowPath(gointake, true),
+                new WaitCommand(1000),
                 drive.FollowPath(gotoshootagain, true),
                 shooter.shootThreeBallsNear(),
                 drive.FollowPath(turntointakeagain, true),

@@ -50,7 +50,7 @@ public class Teleop extends StealthOpMode {
         driveGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
 
-        shooterSubsystem.setShootServoPosition(0.15);
+        shooterSubsystem.setShootServoPosition(0.12);
         shooterSubsystem.setRpm(0);
         shooterSubsystem.setLedColor(0.28);
         register(drive);
