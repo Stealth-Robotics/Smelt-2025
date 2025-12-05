@@ -37,6 +37,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private final Servo hoodServo;
     private final Servo hatServo;
     private final Servo shootServo;
+    private final Servo shootLed;
     private final MotorVelocityReader motorVelocityReader1;
     private final MotorVelocityReader motorVelocityReader2;
     private static final double TICKS_PER_REV = 28;
@@ -71,6 +72,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
         hatServo = hardwareMap.get(Servo.class, "hatServo");
         shootServo = hardwareMap.get(Servo.class, "shootServo");
+        shootLed = hardwareMap.get(Servo.class, "shootLed");
 
         shooterMotor1.setDirection(DcMotorEx.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
@@ -167,6 +169,10 @@ public class ShooterSubsystem extends StealthSubsystem {
         shootServo.setPosition(position);
         shootCurrentPosition = position;
     }
+    public void setLedColor(double color){
+        shootLed.setPosition(color);
+        ledCurrentColor = color;
+    }
     public void setBlockerUp(){
         blockerSetPosition(0.41);
     }
@@ -175,11 +181,13 @@ public class ShooterSubsystem extends StealthSubsystem {
     }
     public Command moveShootServoSide(double RPM){
         return new  WaitUntilCommand(() -> isShootReady(RPM)).andThen(
-                new InstantCommand(() -> setShootServoPosition(0))
+                new InstantCommand(() -> setShootServoPosition(0)).andThen(
+                new InstantCommand(() -> setLedColor(0.47)))
         );
     }
     public void moveShootServoUp(){
         setShootServoPosition(0.15);
+        setLedColor(0.28);
     }
 
     public void setHoodUp(){
@@ -191,6 +199,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double hoodCurrentPosition = 0;
     private double blockerCurrentPosition = 0;
     private double shootCurrentPosition = 0;
+    private double ledCurrentColor = 0;
     public void changePositionUp(){
         if (hoodCurrentPosition >= top_pos){
             hoodCurrentPosition -= 0.01;

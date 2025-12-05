@@ -52,6 +52,7 @@ public class Teleop extends StealthOpMode {
 
         shooterSubsystem.setShootServoPosition(0.15);
         shooterSubsystem.setRpm(0);
+        shooterSubsystem.setLedColor(0.28);
         register(drive);
 
         telemetry.addData("GamepadRaw X", driveGamepad.getLeftX());
