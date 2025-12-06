@@ -119,11 +119,11 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     public Command shootThreeBallsNear(){
         return  new InstantCommand(() -> setHoodDown()).
-                andThen(new WaitUntilCommand(() -> isShootReady(near_rpm)).
-                andThen(moveShootServoSide(near_rpm)).
+                andThen(new WaitUntilCommand(() -> isShootReady(2500)).
+                andThen(moveShootServoSide(2500)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
-                andThen(new WaitCommand(2500)).
+                andThen(new WaitCommand(2000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> setRpm(0))));

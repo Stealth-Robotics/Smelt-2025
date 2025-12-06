@@ -79,10 +79,10 @@ public class DriveSubsystem extends StealthSubsystem {
     }
     public void setAlliance(boolean isAllianceBlue){
         if(isAllianceBlue){
-            offset = -1.2 ;
+            offset = 0.6 ;
         }
         else{
-            offset = 2.7;
+            offset = 2.5;
         }
     }
     public void setPose(Pose pose){

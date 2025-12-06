@@ -17,21 +17,20 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
-
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(11.10)
             .forwardZeroPowerAcceleration(-40.33)
             .lateralZeroPowerAcceleration(-70.75)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.06, 0 , 0.004, 0.03))
             .headingPIDFCoefficients(new PIDFCoefficients(0.7, 0, 0, 0.03))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.5, 0, 0.003, 0.6, 0.03));
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.5, 0, 0.003, 0.6, 0.03))
+            .centripetalScaling(0.0005);
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,
             100,
             1.2,
             1.4
     );
-
     public static PinpointConstants localizer = new PinpointConstants()
             .forwardPodY(-5)
             .strafePodX(5)
