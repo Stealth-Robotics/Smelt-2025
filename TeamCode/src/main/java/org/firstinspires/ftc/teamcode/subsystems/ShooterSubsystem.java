@@ -49,7 +49,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double near_rpm = 2600;
     private double cycle_rpm = 500;
     private double reverse_rpm = -1500;
-    private double far_shot_pos = 0.24;
+    private double far_shot_pos = 0.23;
     private double top_pos = 0;
     private double bottom_pos = 0.65;
     private double VELOCITY_TOLERANCE_LOW = 10;
@@ -129,26 +129,15 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new InstantCommand(() -> setRpm(0))));
     }
     public Command shootThreeBallsFar(){
-        return new InstantCommand(() -> beltSubsystem.setPower(0.5)).
-                andThen(new WaitCommand(600)).
-                andThen(new InstantCommand(() -> setRpm(3500))).
+            return new InstantCommand(() -> setRpm(3500)).
                 andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos))).
                 andThen(new WaitUntilCommand(() -> isShootReady(3500))).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
-                andThen(new WaitCommand(100)).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(0.25))).
-                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
-                andThen(new WaitCommand(100)).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(0.25))).
-                andThen(new WaitUntilCommand(() -> isShootReady(3500))).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.5))).
-                andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
-                andThen(new WaitCommand(2000)).
+                andThen(new InstantCommand(() -> setShootServoPosition(0)).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.25))).
+                andThen(new InstantCommand(() -> intakeSubsystem.setPower(1)))).
+                andThen(new WaitCommand(3000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
-                andThen(new InstantCommand(() -> setRpm(-100))).
-                andThen(new WaitCommand(200)).
                 andThen(new InstantCommand(() -> setRpm(0)));
     }
 

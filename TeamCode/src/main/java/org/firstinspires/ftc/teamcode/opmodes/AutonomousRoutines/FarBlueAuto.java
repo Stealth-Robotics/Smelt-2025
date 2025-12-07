@@ -14,43 +14,31 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "FarBlueAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class FarBlueAuto extends DecodeAutos{
-    public PathChain movetointake;
-    public PathChain gointake;
-    public PathChain gobacktoshoot;
-    private double offset = 2;
+    public PathChain movetoshoot;
+    public PathChain leave;
+    private double offset = 0.2;
     public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
-        movetointake = follower
+        movetoshoot = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(60.000, 9.000), new Pose(38.000, 35.000))
+                        new BezierLine(new Pose(56.000, 9), new Pose(56.000, 10))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(90))
                 .build();
 
-        gointake = follower
+        follower.setStartingPose(new Pose(56, 9, Math.toRadians(90)));
+        leave = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(38.000, 35.000), new Pose(14.000, 35.000))
+                        new BezierLine(new Pose(56.000, 10), new Pose(40, 10))
                 )
-                .addParametricCallback(0, () -> {
-                    follower.setMaxPower(0.5);
-                    intake.setPower(1);
-                    belt.setPower(-0.75);
-                })
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(90))
                 .build();
 
-        gobacktoshoot = follower
-                .pathBuilder()
-                .addPath(
-                        new BezierLine(new Pose(14.000, 35.000), new Pose(58, 14))
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(120))
-                .build();
+        follower.setStartingPose(new Pose(56, 9, Math.toRadians(90)));
 
-        follower.setStartingPose(new Pose(60, 9, Math.toRadians(90)));
     }
 
 
@@ -58,11 +46,12 @@ public class FarBlueAuto extends DecodeAutos{
 
     public Command getAutoCommand() {
         return new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setShootServoPosition(0.12)),
+                drive.FollowPath(movetoshoot, true),
                 new WaitUntilCommand(() -> drive.doAimAtTarget(.1, offset, 50)),
-                shooter.shootThreeBallsFar()
-//                drive.FollowPath(movetointake, true),
-//                drive.FollowPath(gointake, true),
-//                drive.FollowPath(gobacktoshoot, true)
+                shooter.shootThreeBallsFar(),
+                drive.FollowPath(leave, true)
+
         );
     }
 }

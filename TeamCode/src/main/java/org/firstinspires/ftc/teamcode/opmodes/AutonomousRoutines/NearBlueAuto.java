@@ -18,10 +18,15 @@ public class NearBlueAuto extends DecodeAutos{
     public PathChain gointake;
     public PathChain goback;
     public PathChain gohitgate;
+    public PathChain gobackagain;
     public PathChain gotoshootagain;
     public PathChain turntointakeagain;
     public PathChain gointakeagain;
     public PathChain gotoshootthirdtime;
+    public PathChain turntointakethirdtime;
+    public PathChain gointakethirdtime;
+    public PathChain gotoshootfourthtime;
+    public PathChain leave;
     public void initialize() {
         super.initialize();
         Follower follower = drive.getFollower();
@@ -48,7 +53,7 @@ public class NearBlueAuto extends DecodeAutos{
         gointake = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(50.000, 103), new Pose(30, 103))
+                        new BezierLine(new Pose(50.000, 103), new Pose(32, 103))
                 )
                 .addParametricCallback(0, () -> {
                     shooter.setShootServoPosition(0.12);
@@ -61,7 +66,7 @@ public class NearBlueAuto extends DecodeAutos{
         goback = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(30, 103), new Pose(40, 103))
+                        new BezierLine(new Pose(30, 103), new Pose(50, 103))
                 )
                 .addParametricCallback(0, () -> {
                     shooter.setShootServoPosition(0.12);
@@ -74,7 +79,7 @@ public class NearBlueAuto extends DecodeAutos{
         gohitgate = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(40, 103), new Pose(27, 93))
+                        new BezierLine(new Pose(50, 103), new Pose(27, 94))
                 )
                 .addParametricCallback(0, () -> {
                     intake.setPower(1);
@@ -82,13 +87,26 @@ public class NearBlueAuto extends DecodeAutos{
                 })
                 .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();
+        gobackagain = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(27, 95), new Pose(50, 95))
+                )
+                .addParametricCallback(0, () -> {
+                    shooter.setShootServoPosition(0.12);
+                    follower.setMaxPower(1);
+                    intake.setPower(1);
+                    belt.setPower(-0.75);
+                })
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .build();
 
         gotoshootagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(27, 93), new Pose(54, 90))
+                        new BezierLine(new Pose(40, 95), new Pose(54, 90))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(142))
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(138))
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
                     intake.setPower(0.3);
@@ -102,7 +120,7 @@ public class NearBlueAuto extends DecodeAutos{
         turntointakeagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(54, 90), new Pose(56, 80))
+                        new BezierLine(new Pose(54, 90), new Pose(54, 79))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(0))
                 .build();
@@ -110,7 +128,7 @@ public class NearBlueAuto extends DecodeAutos{
         gointakeagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(56, 80), new Pose(20, 79))
+                        new BezierLine(new Pose(54, 79), new Pose(25, 79))
                 )
                 .addParametricCallback(0, () -> {
                     shooter.setShootServoPosition(0.12);
@@ -123,7 +141,7 @@ public class NearBlueAuto extends DecodeAutos{
         gotoshootthirdtime = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(20, 79), new Pose(54, 90))
+                        new BezierLine(new Pose(25, 79), new Pose(54, 90))
                 )
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);
@@ -133,6 +151,49 @@ public class NearBlueAuto extends DecodeAutos{
                     shooter.setRpm(2500);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(142))
+                .build();
+        turntointakethirdtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(54.000, 90.000), new Pose(54.000, 59))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(142), Math.toRadians(0))
+                .build();
+
+        gointakethirdtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(54.000, 59), new Pose(25, 59))
+                )
+                .addParametricCallback(0, () -> {
+                    shooter.setShootServoPosition(0.12);
+                    follower.setMaxPower(1);
+                    intake.setPower(1);
+                    belt.setPower(-0.75);
+                })
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .build();
+
+        gotoshootfourthtime = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(25, 59), new Pose(54.000, 90.000))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(142))
+                .addParametricCallback(0, () -> {
+                    follower.setMaxPower(1);
+                    intake.setPower(0.3);
+                })
+                .addParametricCallback(0.5, () -> {
+                    shooter.setRpm(2500);
+                })
+                .build();
+        leave = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierLine(new Pose(54, 90), new Pose(45, 81))
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(180))
                 .build();
         follower.setStartingPose(new Pose(20.8, 123.2, Math.toRadians(144)));
     }
@@ -149,12 +210,18 @@ public class NearBlueAuto extends DecodeAutos{
                 drive.FollowPath(goback, true),
                 drive.FollowPath(gohitgate, true),
                 new WaitCommand(500),
+                drive.FollowPath(gobackagain, true),
                 drive.FollowPath(gotoshootagain, true),
                 shooter.shootThreeBallsNear(),
                 drive.FollowPath(turntointakeagain, true),
                 drive.FollowPath(gointakeagain, true),
                 drive.FollowPath(gotoshootthirdtime, true),
-                shooter.shootThreeBallsNear()
+                shooter.shootThreeBallsNear(),
+                drive.FollowPath(turntointakethirdtime, true),
+                drive. FollowPath(gointakethirdtime, true),
+                drive.FollowPath(gotoshootfourthtime, true),
+                shooter.shootThreeBallsNear(),
+                drive.FollowPath(leave, true)
         );
     }
 }

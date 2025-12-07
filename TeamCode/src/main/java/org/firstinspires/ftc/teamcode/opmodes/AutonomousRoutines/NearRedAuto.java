@@ -83,7 +83,7 @@ public class NearRedAuto extends DecodeAutos{
         gointakeagain = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(84.000, 40), new Pose(125.000, 40))
+                        new BezierLine(new Pose(84.000, 40), new Pose(128, 40))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addParametricCallback(0, () -> {
@@ -97,7 +97,7 @@ public class NearRedAuto extends DecodeAutos{
         gotoshootthirdtime = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(125.000, 40), new Pose(84.000, 84.000))
+                        new BezierLine(new Pose(128, 40), new Pose(84.000, 84.000))
                 )
                 .addParametricCallback(0, () -> {
                     follower.setMaxPower(1);

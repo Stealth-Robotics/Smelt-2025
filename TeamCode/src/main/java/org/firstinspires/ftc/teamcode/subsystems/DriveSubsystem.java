@@ -82,7 +82,7 @@ public class DriveSubsystem extends StealthSubsystem {
             offset = 0.6 ;
         }
         else{
-            offset = 2.5;
+            offset = 3.4;
         }
     }
     public void setPose(Pose pose){

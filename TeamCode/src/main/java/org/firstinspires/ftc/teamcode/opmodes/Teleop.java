@@ -29,7 +29,7 @@ public class Teleop extends StealthOpMode {
     GamepadEx operatorGamepad;
     Follower follower;
     private double top_pos = 0;
-    private double far_shot_pos = 0.24;
+    private double far_shot_pos = 0.23;
     private double bottom_pos = 0.65;
     private double far_shot_rpm = 3500;
     private double near_shot_rpm = 2600;
