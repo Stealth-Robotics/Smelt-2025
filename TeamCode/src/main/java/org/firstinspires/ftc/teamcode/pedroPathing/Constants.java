@@ -21,8 +21,8 @@ public class Constants {
             .mass(11.10)
             .forwardZeroPowerAcceleration(-40.33)
             .lateralZeroPowerAcceleration(-70.75)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.06, 0 , 0.004, 0.03))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.7, 0, 0, 0.03))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0 , 0.004, 0.03))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.8, 0, 0, 0.03))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.5, 0, 0.003, 0.6, 0.03))
             .centripetalScaling(0.0005);
     public static PathConstraints pathConstraints = new PathConstraints(
@@ -32,8 +32,8 @@ public class Constants {
             1.4
     );
     public static PinpointConstants localizer = new PinpointConstants()
-            .forwardPodY(-5)
-            .strafePodX(5)
+            .forwardPodY(5)
+            .strafePodX(6)
             .yawScalar(1)
             .distanceUnit(DistanceUnit.INCH)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
@@ -53,8 +53,7 @@ public class Constants {
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(mecanumConstants)
                 .build();
-        f.activateDrive();
-        f.activateHeading();
+        f.activateAllPIDFs();
         return f;
     }
 }

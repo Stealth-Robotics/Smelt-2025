@@ -72,7 +72,7 @@ public class RobotAutoDriveToLine_Linear extends LinearOpMode {
     NormalizedColorSensor colorSensor;
 
     static final double     WHITE_THRESHOLD = 0.5;  // spans between 0.0 - 1.0 from dark to light
-    static final double     APPROACH_SPEED  = 0.25;
+    static final double     APPROACH_SPEED  = 0.27;
 
     @Override
     public void runOpMode() {

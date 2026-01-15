@@ -122,9 +122,9 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
 
             // check to see if we need to change exposure or gain.
             thisExpUp = gamepad1.left_bumper;
-            thisExpDn = gamepad1.left_trigger > 0.25;
+            thisExpDn = gamepad1.left_trigger > 0.27;
             thisGainUp = gamepad1.right_bumper;
-            thisGainDn = gamepad1.right_trigger > 0.25;
+            thisGainDn = gamepad1.right_trigger > 0.27;
 
             // look for clicks to change exposure
             if (thisExpUp && !lastExpUp) {

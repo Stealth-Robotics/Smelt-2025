@@ -29,10 +29,10 @@ public class Teleop extends StealthOpMode {
     GamepadEx operatorGamepad;
     Follower follower;
     private double top_pos = 0;
-    private double far_shot_pos = 0.23;
+    private double far_shot_pos = 0.27;
     private double bottom_pos = 0.65;
-    private double far_shot_rpm = 3500;
-    private double near_shot_rpm = 2600;
+    private double far_shot_rpm = 3600;
+    private double near_shot_rpm = 2650;
     private double cycle_rpm = 500;
     private double reverse_rpm = -1500;
     private double offset;
@@ -51,7 +51,7 @@ public class Teleop extends StealthOpMode {
         operatorGamepad = new GamepadEx(gamepad2);
 
         shooterSubsystem.setShootServoPosition(0.12);
-        shooterSubsystem.setRpm(0);
+        shooterSubsystem.setRpm(500);
         shooterSubsystem.setLedColor(0.28);
         register(drive);
 
