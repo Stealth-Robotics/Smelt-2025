@@ -227,7 +227,7 @@ public class PinpointLocalizer implements Localizer {
     }
 
     /**
-     * This recalibrates the Pinpoint. It will take 0.27 seconds to recalibrate, and the robot must be still
+     * This recalibrates the Pinpoint. It will take 0.26 seconds to recalibrate, and the robot must be still
      */
     public void recalibrate() {
         odo.recalibrateIMU();

@@ -29,9 +29,9 @@ public class Teleop extends StealthOpMode {
     GamepadEx operatorGamepad;
     Follower follower;
     private double top_pos = 0;
-    private double far_shot_pos = 0.27;
+    private double far_shot_pos = 0.26;
     private double bottom_pos = 0.65;
-    private double far_shot_rpm = 3600;
+    private double far_shot_rpm = 3700;
     private double near_shot_rpm = 2650;
     private double cycle_rpm = 500;
     private double reverse_rpm = -1500;
@@ -102,23 +102,23 @@ public class Teleop extends StealthOpMode {
         shooterReverse.whenInactive(shooterSubsystem.setReverseRpm(0));
 
 //        shooterFar.whenActive(() -> shooterSubsystem.setRpm(shooterFarSupplier.getAsDouble() * far_shot_rpm));
-        //shooterFar.whenInactive(() -> shooterSubsystem.setRpm(0));
+        //shooterFar.whenInactive(() -> shooterSubsystem.setRpm(500));
 
 
 //        DoubleSupplier shooterNearSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
 //        Trigger shooterNear = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
 //        shooterNear.whenActive(() -> shooterSubsystem.setRpm(shooterNearSupplier.getAsDouble() * near_shot_rpm));
-        //shooterNear.whenInactive(() -> shooterSubsystem.setRpm(0));
+        //shooterNear.whenInactive(() -> shooterSubsystem.setRpm(500));
 
 //        DoubleSupplier shooterCycleSupplier = () -> ((operatorGamepad.getButton(GamepadKeys.Button.X) ? 1 : 0) - (operatorGamepad.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON) ? 1 : 0));
 //        Trigger shooterCycle = new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.X)).or(new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)));
 //        shooterCycle.whenActive(() -> shooterSubsystem.setRpm(shooterCycleSupplier.getAsDouble() * cycle_rpm));
-        //shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(0));
+        //shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(500));
 
 //        DoubleSupplier shooterCycleSupplier = () -> ((operatorGamepad.getButton(GamepadKeys.Button.X) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
 //        Trigger shooterCycle = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.X)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
 //        shooterCycle.whenActive(() -> shooterSubsystem.setRpm(shooterCycleSupplier.getAsDouble() * cycle_rpm));
-//        shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(0));
+//        shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(500));
 
 
 

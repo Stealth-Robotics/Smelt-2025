@@ -18,7 +18,7 @@ public class BeltSubsystem extends StealthSubsystem {
         beltMotor.setPower(0.75);
     }
     public void setPower(double power){
-        beltMotor.setPower(0.75 * power);
+        beltMotor.setPower(-0.75 * power);
     }
     public void stop(){
         beltMotor.setPower(0);

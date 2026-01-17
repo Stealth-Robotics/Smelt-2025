@@ -22,6 +22,7 @@ import com.pedropathing.control.PIDFController;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.usablethings.AprilTagIds;
 import org.firstinspires.ftc.teamcode.usablethings.Drawing;
 import org.stealthrobotics.library.StealthSubsystem;
 
@@ -82,7 +83,7 @@ public class DriveSubsystem extends StealthSubsystem {
             offset = 0.6 ;
         }
         else{
-            offset = 3.4;
+            offset = 4;
         }
     }
     public void setPose(Pose pose){

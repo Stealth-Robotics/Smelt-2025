@@ -45,7 +45,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private final ElapsedTime shootTimer = new ElapsedTime();
     public static final double MAX_RPM = 4500;
     public static final double MIN_RPM = -4000;
-    private double far_rpm = 3600;
+    private double far_rpm = 3700;
     private double near_rpm = 2650;
     private double cycle_rpm = 500;
     private double reverse_rpm = -1500;
@@ -111,34 +111,34 @@ public class ShooterSubsystem extends StealthSubsystem {
         return (difference <= VELOCITY_TOLERANCE_HIGH||curMs > MAX_SHOOT_TIME_MS);
     }
     public Command shootOneBallFar(){
-        return  new InstantCommand(() -> setRpm(3600)).
+        return  new InstantCommand(() -> setRpm(3700)).
                 andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos)).
-                andThen(new WaitUntilCommand(() -> isShootReady(3600))).
+                andThen(new WaitUntilCommand(() -> isShootReady(3700))).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))));
     }
 
     public Command shootThreeBallsNear(){
         return  new InstantCommand(() -> setHoodDown()).
-                andThen(new WaitUntilCommand(() -> isShootReady(2500)).
-                andThen(moveShootServoSide(2500)).
+                andThen(new WaitUntilCommand(() -> isShootReady(2650)).
+                andThen(moveShootServoSide(2650)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.75))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(1))).
                 andThen(new WaitCommand(2000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
-                andThen(new InstantCommand(() -> setRpm(500))));
+                andThen(new InstantCommand(() -> setRpm(0))));
     }
     public Command shootThreeBallsFar(){
-            return new InstantCommand(() -> setRpm(3600)).
+            return new InstantCommand(() -> setRpm(3700)).
                 andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos))).
-                andThen(new WaitUntilCommand(() -> isShootReady(3600))).
+                andThen(new WaitUntilCommand(() -> isShootReady(3700))).
                 andThen(new InstantCommand(() -> setShootServoPosition(0)).
-                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.27))).
+                andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.26))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(1)))).
                 andThen(new WaitCommand(3000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
-                andThen(new InstantCommand(() -> setRpm(500)));
+                andThen(new InstantCommand(() -> setRpm(0)));
     }
 
     public void hoodSetPosition(double position) {
@@ -221,7 +221,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     public Command setRpmCycle(){
         return new InstantCommand(() -> isCycleShot =!isCycleShot).andThen( new ConditionalCommand(
                 new InstantCommand(() -> setHoodUp()).andThen(new InstantCommand(() -> setRpm(cycle_rpm))).andThen(moveShootServoSide(cycle_rpm)),
-                new InstantCommand(() -> setRpm(500)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                new InstantCommand(() -> setRpm(0)).andThen(new InstantCommand(() -> moveShootServoUp())),
                 () -> isCycleShot));
     }
     public Command setReverseRpm(double RPM){
@@ -277,13 +277,14 @@ public class ShooterSubsystem extends StealthSubsystem {
         dashboardTelemetry.addData("calculatedPower", calculatedPower);
         calculatedPower = MathUtils.clamp(calculatedPower, -1, 1);
         dashboardTelemetry.addData("setRpms", setRpms);
-        dashboardTelemetry.addData("CurrentRPM", getCurrentRpm());
+        dashboardTelemetry.addData(
+                "CurrentRPM", getCurrentRpm());
         dashboardTelemetry.addData("isFarShot", isFarShot);
         dashboardTelemetry.update();
         telemetryM.addData("setRpms", setRpms);
         telemetryM.addData("CurrentRPM", getCurrentRpm());
         telemetryM.addData("CurrentRpmTest", currentRpm);
-        telemetryM.addData("isShootReady", isShootReady(3600));
+        telemetryM.addData("isShootReady", isShootReady(3700));
         telemetryM.addData("AverageRpm", getCurrentRpm());
         dashboardTelemetry.addData("Motor1Rpm", Math.abs(shooterMotor1.getVelocity() / TICKS_PER_REV * 60));
         dashboardTelemetry.addData("Motor2Rpm", Math.abs(shooterMotor2.getVelocity() / TICKS_PER_REV * 60));

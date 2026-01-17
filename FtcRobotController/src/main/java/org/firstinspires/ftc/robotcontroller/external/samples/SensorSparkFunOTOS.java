@@ -111,7 +111,7 @@ public class SensorSparkFunOTOS extends LinearOpMode {
         // to the inverse of the error. Remember that the angle wraps from -180 to
         // 180 degrees, so for example, if after 10 rotations counterclockwise
         // (positive rotation), the sensor reports -15 degrees, the required scalar
-        // would be 3600/3585 = 1.004. To calibrate the linear scalar, move the
+        // would be 3700/3585 = 1.004. To calibrate the linear scalar, move the
         // robot a known distance and measure the error; do this multiple times at
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
