@@ -42,12 +42,12 @@ public class DriveSubsystem extends StealthSubsystem {
     private final CameraSubsystem cameraSubsystem;
     public static final double MAX_ROTATION_POWER = 0.90;
 
-    public static final double MIN_ROTATION_POWER = 0.068 ;
+    public static final double MIN_ROTATION_POWER = 0.1;
     private double offset = 0;
     private static final PIDFCoefficients HEADING_COEFFICIENTS
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
-    public static double AUTO_AIM_TOLERANCE = 0.2;
+    public static double AUTO_AIM_TOLERANCE = 0.5;
     public DriveSubsystem(HardwareMap hardwareMap) {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
@@ -80,7 +80,7 @@ public class DriveSubsystem extends StealthSubsystem {
     }
     public void setAlliance(boolean isAllianceBlue){
         if(isAllianceBlue){
-            offset = 0.6 ;
+            offset = 0.3 ;
         }
         else{
             offset = 4;
@@ -116,9 +116,8 @@ public class DriveSubsystem extends StealthSubsystem {
             Pose llPose = cameraSubsystem.getAvgTargetPose(50); // Get averaged target position.
             if (llPose != null) {
                 // Calculate the turn power needed to center the target.
-                double output = getScaledTxOutput(llPose.getX() + offset , AUTO_AIM_TOLERANCE);
                 //The output is applied to the rotation power (note: may need to be inverted).
-                turn = output;
+                turn = getScaledTxOutput(llPose.getX() + offset , AUTO_AIM_TOLERANCE);
 
             } else {
                 // If the target is lost, reset the PID controller to prevent integral windup.

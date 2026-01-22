@@ -90,7 +90,7 @@ public class FarRedAuto extends DecodeAutos {
         return new SequentialCommandGroup(
                 drive.FollowPath(gotoshoot, true),
                 new InstantCommand(() -> shooter.setShootServoPosition(0.12)),
-                new InstantCommand(() -> shooter.setRpm(500)),
+                new InstantCommand(() -> shooter.setRpm(1000)),
                 new WaitUntilCommand(() -> drive.doAimAtTarget(.1,  offset,50)),
                 shooter.shootThreeBallsFar(),
                 drive.FollowPath(leave, true)

@@ -50,7 +50,7 @@ public class TestAuto extends StealthOpMode{
 //            new InstantCommand(() -> intakeSubsystem.setPower(1)), new WaitCommand(2000),
 //            new InstantCommand(() -> intakeSubsystem.setPower(0)),
 //            new InstantCommand(() -> beltSubsystem.setPower(0)),
-//            new InstantCommand(() -> shooterSubsystem.setRpm(500))
+//            new InstantCommand(() -> shooterSubsystem.setRpm(1000))
             );
     }
 

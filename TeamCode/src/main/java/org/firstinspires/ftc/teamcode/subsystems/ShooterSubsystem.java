@@ -129,8 +129,8 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new InstantCommand(() -> setRpm(0))));
     }
     public Command shootThreeBallsFar(){
-            return new InstantCommand(() -> setRpm(3700)).
-                andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos))).
+            return new InstantCommand(() -> setRpm(3700)) .
+                andThen(new InstantCommand(() -> hoodSetPosition(far_shot_pos)).
                 andThen(new WaitUntilCommand(() -> isShootReady(3700))).
                 andThen(new InstantCommand(() -> setShootServoPosition(0)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(-0.26))).
@@ -138,7 +138,7 @@ public class ShooterSubsystem extends StealthSubsystem {
                 andThen(new WaitCommand(3000)).
                 andThen(new InstantCommand(() -> beltSubsystem.setPower(0))).
                 andThen(new InstantCommand(() -> intakeSubsystem.setPower(0))).
-                andThen(new InstantCommand(() -> setRpm(0)));
+                andThen(new InstantCommand(() -> setRpm(0))));
     }
 
     public void hoodSetPosition(double position) {
@@ -207,14 +207,14 @@ public class ShooterSubsystem extends StealthSubsystem {
     public Command setRpmFar(){
         return new InstantCommand(() -> isFarShot =!isFarShot).andThen( new ConditionalCommand(
                 new InstantCommand(() -> setHoodUp()).andThen(new InstantCommand(() -> setRpm(far_rpm))).andThen(moveShootServoSide(far_rpm)),
-                new InstantCommand(() -> setRpm(500)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                new InstantCommand(() -> setRpm(1000)).andThen(new InstantCommand(() -> moveShootServoUp())),
                 () -> isFarShot));
 
     }
     public Command setRpmNear(){
         return new InstantCommand(() -> isNearShot =!isNearShot).andThen( new ConditionalCommand(
                 new InstantCommand(() -> setHoodDown()).andThen(new InstantCommand(() -> setRpm(near_rpm))).andThen(moveShootServoSide(near_rpm)),
-                new InstantCommand(() -> setRpm(500)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                new InstantCommand(() -> setRpm(1000)).andThen(new InstantCommand(() -> moveShootServoUp())),
                 () -> isNearShot));
     }
 
@@ -227,7 +227,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     public Command setReverseRpm(double RPM){
         return new ConditionalCommand(
                 new InstantCommand(() -> setShootServoPosition(0)).andThen(new InstantCommand(() -> setRpm(reverse_rpm))),
-                new InstantCommand(() -> setRpm(500)).andThen(new InstantCommand(() -> moveShootServoUp())),
+                new InstantCommand(() -> setRpm(1000)).andThen(new InstantCommand(() -> moveShootServoUp())),
                 () -> RPM == reverse_rpm);
     }
     public void setRpm(double rpm) {
