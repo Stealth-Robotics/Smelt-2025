@@ -22,7 +22,7 @@ public class TestAuto extends StealthOpMode{
     IntakeSubsystem intakeSubsystem;
     CameraSubsystem cameraSubsystem;
 //    private double top_pos = 0;
-//    private double bottom_pos = 0.65;
+//    private double bottom_pos = 0.71;
     static PathChain Path1;
     @Override
     public void initialize() {

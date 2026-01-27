@@ -49,20 +49,20 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double near_rpm = 2650;
     private double cycle_rpm = 500;
     private double reverse_rpm = -1500;
-    private double far_shot_pos = 0.27;
+    private double far_shot_pos = 0.31;
     private double top_pos = 0;
-    private double bottom_pos = 0.65;
+    private double bottom_pos = 0.67;
     private double VELOCITY_TOLERANCE_LOW = 10;
     private double VELOCITY_TOLERANCE_HIGH = 100;
     private double MIN_SHOOT_TIME_MS = 500;
     private double MAX_SHOOT_TIME_MS = 5000;
     boolean isFarShot = false;
     boolean isNearShot = false;
-    boolean isCycleShot = false;
+    boolean isCycleShot = false; 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     private double setRpms = 0;
-    public static final PIDFController ShooterController = new PIDFController(0.009, 0.0001, 0.0001, 0.00044);
+    public static final PIDFController ShooterController = new PIDFController(0.009, 0.0001, 0.0001, 0.00052);
     public ShooterSubsystem(HardwareMap hardwareMap) {
         this.beltSubsystem = new BeltSubsystem(hardwareMap);
         this.intakeSubsystem = new IntakeSubsystem(hardwareMap);

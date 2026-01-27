@@ -30,7 +30,7 @@ public class Teleop extends StealthOpMode {
     Follower follower;
     private double top_pos = 0;
     private double far_shot_pos = 0.26;
-    private double bottom_pos = 0.65;
+    private double bottom_pos = 0.71;
     private double far_shot_rpm = 3700;
     private double near_shot_rpm = 2650;
     private double cycle_rpm = 500;
