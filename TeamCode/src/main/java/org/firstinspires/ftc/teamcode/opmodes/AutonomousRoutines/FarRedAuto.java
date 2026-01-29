@@ -13,6 +13,8 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+
 @Autonomous(name = "FarRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class FarRedAuto extends DecodeAutos {
     public PathChain gotoshoot;
@@ -90,7 +92,7 @@ public class FarRedAuto extends DecodeAutos {
         return new SequentialCommandGroup(
                 drive.FollowPath(gotoshoot, true),
                 new InstantCommand(() -> shooter.setShootServoPosition(0.12)),
-                new InstantCommand(() -> shooter.setRpm(1000)),
+                new InstantCommand(() -> shooter.setShooterRpm(ShooterSubsystem.ShooterMode.STOPPED)),
                 new WaitUntilCommand(() -> drive.doAimAtTarget(.1,  offset,50)),
                 shooter.shootThreeBallsFar(),
                 drive.FollowPath(leave, true)

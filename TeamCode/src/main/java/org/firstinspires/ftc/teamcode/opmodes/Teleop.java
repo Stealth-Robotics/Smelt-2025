@@ -14,77 +14,58 @@ import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+import org.stealthrobotics.library.Alliance;
 import org.stealthrobotics.library.opmodes.StealthOpMode;
 
 import java.util.function.DoubleSupplier;
 
-@TeleOp (name = "TeleOp")
 public class Teleop extends StealthOpMode {
+    GamepadEx driveGamepad;
+    GamepadEx operatorGamepad;
+
+    Follower follower;
 
     DriveSubsystem drive;
     BeltSubsystem beltSubsystem;
     IntakeSubsystem intakeSubsystem;
     ShooterSubsystem shooterSubsystem;
-    GamepadEx driveGamepad;
-    GamepadEx operatorGamepad;
-    Follower follower;
-    private double top_pos = 0;
-    private double far_shot_pos = 0.26;
-    private double bottom_pos = 0.71;
-    private double far_shot_rpm = 3700;
-    private double near_shot_rpm = 2650;
-    private double cycle_rpm = 500;
-    private double reverse_rpm = -1500;
-    private double offset;
-    FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
     public void initialize() {
-
-        shooterSubsystem = new ShooterSubsystem(hardwareMap);
-        drive = new DriveSubsystem(hardwareMap);
-
-        intakeSubsystem = shooterSubsystem.getIntakeSubsystem();
-        beltSubsystem = shooterSubsystem.getBeltSubsystem();
-
         driveGamepad = new GamepadEx(gamepad1);
         operatorGamepad = new GamepadEx(gamepad2);
 
-        shooterSubsystem.setShootServoPosition(0.12);
-        shooterSubsystem.setRpm(1000);
-        shooterSubsystem.setLedColor(0.28);
-        register(drive);
+        drive = new DriveSubsystem(hardwareMap);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        beltSubsystem = new BeltSubsystem(hardwareMap);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap, beltSubsystem, intakeSubsystem);
 
-        telemetry.addData("GamepadRaw X", driveGamepad.getLeftX());
-        //negative for strafing because some motors are reversed (testbot)
+        /*
+         Prepare the shooter for the match by setting the shooter to its idle velocity and the shot blocker to block artifacts
+         from entering the shooter before it's ready
+         */
+        shooterSubsystem.preventShooting().schedule();
+        shooterSubsystem.idle().schedule();
+
         drive.setDefaultCommand(drive.driveTeleop(
                 () -> driveGamepad.getLeftY(),
                 () -> driveGamepad.getLeftX(),
                 () -> driveGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) - driveGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
                 () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));
 
+        shooterSubsystem.resetVelocityReaders();
+
+        // Set our alliance based off the teleop name
+        drive.setAlliance(Alliance.get() == Alliance.BLUE);
+
+        register(drive);
+
         configureBindings();
     }
 
-    protected SequentialCommandGroup shoot() {
-        return null;
-    }
     private void configureBindings() {
-
-        //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.setPower(1));
-        //driveGamepad.getGamepadButton(GamepadKeys.Button.B).whenReleased(() -> shooterSubsystem.stop());
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> shooterSubsystem.changePositionUp());
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> shooterSubsystem.changePositionDown());
-
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(() -> drive.setAlliance(true));
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> drive.setAlliance(false));
-
-
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> shooterSubsystem.hoodSetPosition(bottom_pos));
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.Y).whenPressed(() -> shooterSubsystem.hoodSetPosition(far_shot_pos));
         operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(() -> shooterSubsystem.setBlockerUp());
         operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> shooterSubsystem.setBlockerDown());
-
 
         driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
 
@@ -93,38 +74,25 @@ public class Teleop extends StealthOpMode {
         intake.whenActive(() -> intakeSubsystem.setPower(intakeSupplier.getAsDouble()));
         intake.whenInactive(() -> intakeSubsystem.stop());
 
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).whenPressed(shooterSubsystem.setRpmFar());
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).whenPressed(shooterSubsystem.setRpmNear());
-        operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(shooterSubsystem.setRpmCycle());
+        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).whenPressed(shooterSubsystem.shootFar());
+        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).whenPressed(shooterSubsystem.shootNear());
+
+        operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(shooterSubsystem.cycle());
 
         Trigger shooterReverse = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP));
-        shooterReverse.whenActive(shooterSubsystem.setReverseRpm(reverse_rpm));
-        shooterReverse.whenInactive(shooterSubsystem.setReverseRpm(0));
-
-//        shooterFar.whenActive(() -> shooterSubsystem.setRpm(shooterFarSupplier.getAsDouble() * far_shot_rpm));
-        //shooterFar.whenInactive(() -> shooterSubsystem.setRpm(1000));
-
-
-//        DoubleSupplier shooterNearSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
-//        Trigger shooterNear = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_LEFT)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
-//        shooterNear.whenActive(() -> shooterSubsystem.setRpm(shooterNearSupplier.getAsDouble() * near_shot_rpm));
-        //shooterNear.whenInactive(() -> shooterSubsystem.setRpm(1000));
-
-//        DoubleSupplier shooterCycleSupplier = () -> ((operatorGamepad.getButton(GamepadKeys.Button.X) ? 1 : 0) - (operatorGamepad.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON) ? 1 : 0));
-//        Trigger shooterCycle = new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.X)).or(new Trigger(() -> operatorGamepad.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)));
-//        shooterCycle.whenActive(() -> shooterSubsystem.setRpm(shooterCycleSupplier.getAsDouble() * cycle_rpm));
-        //shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(1000));
-
-//        DoubleSupplier shooterCycleSupplier = () -> ((operatorGamepad.getButton(GamepadKeys.Button.X) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : 0));
-//        Trigger shooterCycle = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.X)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP)));
-//        shooterCycle.whenActive(() -> shooterSubsystem.setRpm(shooterCycleSupplier.getAsDouble() * cycle_rpm));
-//        shooterCycle.whenInactive(() -> shooterSubsystem.setRpm(1000));
-
-
+        shooterReverse.whenActive(shooterSubsystem.reverse());
+        shooterReverse.whenInactive(shooterSubsystem.idle());
 
         beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));
 
-        driveGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(()-> drive.resetHeading());
+        driveGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> drive.resetHeading());
     }
 
+    @SuppressWarnings("unused")
+    @TeleOp(name = "Red Teleop", group = "Red")
+    public static class RedTeleop extends Teleop { }
+
+    @SuppressWarnings("unused")
+    @TeleOp(name = "Blue Teleop", group = "Blue")
+    public static class BlueTeleop extends Teleop { }
 }

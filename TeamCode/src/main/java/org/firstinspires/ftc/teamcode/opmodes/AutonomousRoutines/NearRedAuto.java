@@ -11,6 +11,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 @Autonomous(name = "NearRedAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class NearRedAuto extends DecodeAutos{
@@ -33,7 +34,7 @@ public class NearRedAuto extends DecodeAutos{
                 .addPath(new BezierLine(new Pose(123.2,123.2), new Pose(84,84)))
                 .setLinearHeadingInterpolation(Math.toRadians(36), Math.toRadians(40))
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .build();
         turntointake = follower
@@ -69,7 +70,7 @@ public class NearRedAuto extends DecodeAutos{
                     intake.setPower(0.3);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .build();
         turntointakeagain = follower
@@ -104,7 +105,7 @@ public class NearRedAuto extends DecodeAutos{
                     intake.setPower(0.3);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(37))
                 .build();
@@ -140,7 +141,7 @@ public class NearRedAuto extends DecodeAutos{
                     intake.setPower(0.3);
                 })
                 .addParametricCallback(0.3, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(37))
                 .build();

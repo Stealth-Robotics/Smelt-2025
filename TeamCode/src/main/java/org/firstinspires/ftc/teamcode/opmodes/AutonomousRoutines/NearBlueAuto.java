@@ -11,6 +11,8 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+
 @Autonomous(name = "NearBlueAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class NearBlueAuto extends DecodeAutos{
     public PathChain movetoshoot;
@@ -38,7 +40,7 @@ public class NearBlueAuto extends DecodeAutos{
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(144), Math.toRadians(137))
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .build();
 
@@ -101,7 +103,7 @@ public class NearBlueAuto extends DecodeAutos{
                     belt.setPower(-0.75);
                 })
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
 
                 .build();
@@ -147,7 +149,7 @@ public class NearBlueAuto extends DecodeAutos{
                     intake.setPower(0.3);
                 })
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(139))
                 .build();
@@ -183,7 +185,7 @@ public class NearBlueAuto extends DecodeAutos{
                     intake.setPower(0.3);
                 })
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(2650);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT);
                 })
                 .build();
         leave = follower

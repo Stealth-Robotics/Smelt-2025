@@ -13,6 +13,8 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+
 @Autonomous(name = "FarBlueAuto", group = "Autos", preselectTeleOp = "Teleop")
 public class FarBlueAuto extends DecodeAutos{
     public PathChain movetoshoot;
@@ -81,7 +83,7 @@ public class FarBlueAuto extends DecodeAutos{
                         )
                 ).setTangentHeadingInterpolation()
                 .addParametricCallback(0.5, () -> {
-                    shooter.setRpm(0);
+                    shooter.setShooterRpm(ShooterSubsystem.ShooterMode.STOPPED);
                     shooter.setShootServoPosition(0.12);
                     intake.setPower(0);
                     belt.setPower(0);
