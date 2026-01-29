@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.beltCommand;
+import org.firstinspires.ftc.teamcode.commands.BeltCommand;
 import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -79,11 +76,14 @@ public class Teleop extends StealthOpMode {
 
         operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(shooterSubsystem.cycle());
 
+        //Shooter forceIdle
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.A).whenActive(shooterSubsystem.forceIdle());
+
         Trigger shooterReverse = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP));
         shooterReverse.whenActive(shooterSubsystem.reverse());
         shooterReverse.whenInactive(shooterSubsystem.idle());
 
-        beltSubsystem.setDefaultCommand(new beltCommand(beltSubsystem, () -> driveGamepad.getRightY()));
+        beltSubsystem.setDefaultCommand(new BeltCommand(beltSubsystem, () -> driveGamepad.getRightY()));
 
         driveGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> drive.resetHeading());
     }

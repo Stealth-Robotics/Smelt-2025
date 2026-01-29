@@ -58,6 +58,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double currentRPM = 0;
     private double targetRPM = 0;
 
+    private final Command shootWaitCommand = new SequentialCommandGroup(new WaitUntilCommand(this::isReadyToShoot), allowShooting());
+
     public enum ShooterMode {
         FAR_SHOT(3700),
         NEAR_SHOT(2650),
@@ -161,10 +163,7 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     // Waits until the shooter is at its target RPM and then allows balls to pass into the shooter
     public Command shootWhenReady() {
-        return new SequentialCommandGroup(
-                new WaitUntilCommand(this::isReadyToShoot),
-                allowShooting()
-        );
+        return shootWaitCommand;
     }
 
     //Opens the latch that blocks artifacts from entering the shooter
@@ -222,6 +221,14 @@ public class ShooterSubsystem extends StealthSubsystem {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> setShootServoPosition(0)),
                 new InstantCommand(() -> setShooterRpm(ShooterMode.REVERSE))
+        );
+    }
+
+    //Command that cancels all ongoing shooter actions and idles
+    public Command forceIdle() {
+        return new SequentialCommandGroup(
+                new InstantCommand(shootWaitCommand::cancel),
+                idle()
         );
     }
 

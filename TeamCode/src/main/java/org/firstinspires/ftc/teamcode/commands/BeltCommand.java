@@ -6,11 +6,11 @@ import org.firstinspires.ftc.teamcode.subsystems.BeltSubsystem;
 
 import java.util.function.DoubleSupplier;
 
-public class beltCommand extends CommandBase {
+public class BeltCommand extends CommandBase {
     BeltSubsystem beltSubsystem;
     DoubleSupplier power;
 
-    public beltCommand(BeltSubsystem beltSubsystem, DoubleSupplier power){
+    public BeltCommand(BeltSubsystem beltSubsystem, DoubleSupplier power){
         this.beltSubsystem = beltSubsystem;
         this.power = power;
 
