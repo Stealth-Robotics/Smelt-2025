@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -78,6 +79,12 @@ public class Teleop extends StealthOpMode {
 
         //Shooter forceIdle
         operatorGamepad.getGamepadButton(GamepadKeys.Button.A).whenActive(shooterSubsystem.forceIdle());
+
+        //Pre-spin up
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenActive(
+                new InstantCommand(() -> shooterSubsystem.setShooterRpm(ShooterSubsystem.ShooterMode.FAR_SHOT)));
+        operatorGamepad.getGamepadButton(GamepadKeys.Button.Y).whenActive(
+                new InstantCommand(() -> shooterSubsystem.setShooterRpm(ShooterSubsystem.ShooterMode.NEAR_SHOT)));
 
         Trigger shooterReverse = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.DPAD_UP));
         shooterReverse.whenActive(shooterSubsystem.reverse());

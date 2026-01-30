@@ -37,23 +37,25 @@ import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 public class DriveSubsystem extends StealthSubsystem {
 
     private final Follower follower;
-    private final TelemetryManager telemetryM;
+//    private final TelemetryManager telemetryM;
     private double headingOffset = 0.0;
+    private double offset = 0.0;
     private final CameraSubsystem cameraSubsystem;
-    public static final double MAX_ROTATION_POWER = 0.90;
 
+    public static final double MAX_ROTATION_POWER = 0.90;
     public static final double MIN_ROTATION_POWER = 0.1;
-    private double offset = 0;
+
     private static final PIDFCoefficients HEADING_COEFFICIENTS
             = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
+
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
     public static double AUTO_AIM_TOLERANCE = 0.5;
     public DriveSubsystem(HardwareMap hardwareMap) {
         this.follower = Constants.createFollower(hardwareMap);
         this.cameraSubsystem = new CameraSubsystem(hardwareMap);
         follower.startTeleOpDrive(true);
-        Drawing.init();
-        this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+//        Drawing.init();
+//        this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
     }
 
@@ -126,19 +128,15 @@ public class DriveSubsystem extends StealthSubsystem {
         }
 
         follower.setTeleOpDrive(y, x, turn,  this.robotCentric);
-        telemetryM.addData("TURN:", turn);
-        follower.update();
+//        telemetryM.addData("TURN:", turn);
     }
     public Command  FollowPath(PathChain path, boolean holdPoint){
         return this.runOnce(()-> follower.followPath(path,holdPoint))
                         .andThen(new WaitUntilCommand(()-> !follower.isBusy()));
     }
-    //TODO: make field centric toggleable
-    //x is reversed
+
     private boolean robotCentric = false;
     public Command driveTeleop(DoubleSupplier y, DoubleSupplier x, DoubleSupplier rot, BooleanSupplier isAutoAim) {
-        telemetry.addData("Driving", y.getAsDouble());
-
         return this.run(() -> drive(y.getAsDouble(), -x.getAsDouble(), rot.getAsDouble(), isAutoAim.getAsBoolean(), offset));
     }
 
@@ -176,13 +174,12 @@ public class DriveSubsystem extends StealthSubsystem {
 
     @Override
     public void periodic() {
-        telemetryM.addData("Raw Heading", getHeading());
-        telemetryM.addData("Heading", Math.toDegrees(getHeading()));
-        telemetryM.addData("isRobotCentric", robotCentric);
-        telemetryM.addData("X Pose", follower.getPose().getX());
-        telemetryM.addData("Y Pose", follower.getPose().getY());
-        telemetryM.addData("offset", offset);
-        draw();
+//        telemetryM.addData("Raw Heading", getHeading());
+//        telemetryM.addData("Heading", Math.toDegrees(getHeading()));
+//        telemetryM.addData("isRobotCentric", robotCentric);
+//        telemetryM.addData("X Pose", follower.getPose().getX());
+//        telemetryM.addData("Y Pose", follower.getPose().getY());
+//        telemetryM.addData("offset", offset);
         follower.update();
     }
 
