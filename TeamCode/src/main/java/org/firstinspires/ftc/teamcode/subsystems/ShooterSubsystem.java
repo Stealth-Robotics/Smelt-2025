@@ -35,6 +35,8 @@ public class ShooterSubsystem extends StealthSubsystem {
     // ! Disable in matches to reduce latency
     private final TelemetryManager telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
+    private ShooterMode mode = ShooterMode.IDLE;
+
     private final BeltSubsystem beltSubsystem;
     private final IntakeSubsystem intakeSubsystem;
 
@@ -60,7 +62,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double targetRPM = 0;
 
     public enum ShooterMode {
-        FAR_SHOT(3400),//3700
+        FAR_SHOT(3300),//3700
         NEAR_SHOT(2650),
         IDLE(0),
         CYCLE(500),
@@ -75,8 +77,8 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     public enum HoodMode {
         MAX(0),
-        FAR_SHOT(0.40), //0.26
-        NEAR_SHOT(0.71);
+        FAR_SHOT(0.45), //0.26
+        NEAR_SHOT(0.70);
 
         public double angle;
         HoodMode(double angle) {
@@ -97,6 +99,9 @@ public class ShooterSubsystem extends StealthSubsystem {
 
         shooterMotor1.setDirection(DcMotorEx.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorEx.Direction.FORWARD);
+
+        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         shooterMotor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -235,6 +240,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     }*/
 
     public void setShooterRpm(ShooterMode mode) {
+        this.mode = mode;
         targetRPM = MathFunctions.clamp(mode.rpm, MIN_RPM, MAX_RPM);
 
         // Convert desired RPM to encoder ticks per second, which is the unit required by DcMotorEx.setVelocity().
@@ -265,9 +271,18 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     @Override
     public void periodic() {
-        double calculatedPower = shooterController.calculate(-getAvgTicks());
-        shooterMotor1.setPower(calculatedPower);
-        shooterMotor2.setPower(calculatedPower);
+
+        double calculatedPower = 0.0;
+        if (mode != ShooterMode.IDLE) {
+            calculatedPower = shooterController.calculate(-getAvgTicks());
+            shooterMotor1.setPower(calculatedPower);
+            shooterMotor2.setPower(calculatedPower);
+        }
+        else {
+            shooterMotor1.setPower(0);
+            shooterMotor2.setPower(0);
+        }
+
 
         updateRPMEstimate();
 
