@@ -5,8 +5,8 @@ package org.firstinspires.ftc.teamcode.usablethings;
  */
 public enum Pipeline {
     APRILTAGS_TARGET_BOTH(0),
-    APRILTAG_TARGET_BLUE(1),
-    APRILTAG_TARGET_RED(2),
+    APRILTAG_TARGET_BLUE(2),
+    APRILTAG_TARGET_RED(1),
     APRILTAG_MOTIF(3);
 
     public final int id;

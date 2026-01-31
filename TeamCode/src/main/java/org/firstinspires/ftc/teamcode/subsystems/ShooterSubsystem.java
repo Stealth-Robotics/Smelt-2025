@@ -7,6 +7,7 @@ import androidx.core.math.MathUtils;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -58,12 +59,10 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double currentRPM = 0;
     private double targetRPM = 0;
 
-    private final Command shootWaitCommand = new SequentialCommandGroup(new WaitUntilCommand(this::isReadyToShoot), allowShooting());
-
     public enum ShooterMode {
-        FAR_SHOT(3700),
+        FAR_SHOT(3400),//3700
         NEAR_SHOT(2650),
-        IDLE(1000),
+        IDLE(0),
         CYCLE(500),
         REVERSE(-1500),
         STOPPED(0);
@@ -76,7 +75,7 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     public enum HoodMode {
         MAX(0),
-        FAR_SHOT(0.26),
+        FAR_SHOT(0.40), //0.26
         NEAR_SHOT(0.71);
 
         public double angle;
@@ -163,7 +162,7 @@ public class ShooterSubsystem extends StealthSubsystem {
 
     // Waits until the shooter is at its target RPM and then allows balls to pass into the shooter
     public Command shootWhenReady() {
-        return shootWaitCommand;
+        return new SequentialCommandGroup(new WaitUntilCommand(this::isReadyToShoot), allowShooting());
     }
 
     //Opens the latch that blocks artifacts from entering the shooter
@@ -187,6 +186,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> setHoodPosition(HoodMode.FAR_SHOT)),
                 new InstantCommand(() -> setShooterRpm(ShooterMode.FAR_SHOT)),
+                new InstantCommand(() -> beltSubsystem.setBeltRatio(0.75)),
                 shootWhenReady()
         );
     }
@@ -195,6 +195,7 @@ public class ShooterSubsystem extends StealthSubsystem {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> setHoodPosition(HoodMode.NEAR_SHOT)),
                 new InstantCommand(() -> setShooterRpm(ShooterMode.NEAR_SHOT)),
+                new InstantCommand(() -> beltSubsystem.setBeltRatio(1)),
                 shootWhenReady()
         );
     }
@@ -225,12 +226,13 @@ public class ShooterSubsystem extends StealthSubsystem {
     }
 
     //Command that cancels all ongoing shooter actions and idles
-    public Command forceIdle() {
+    /*public Command forceIdle() {
+        CommandScheduler.getInstance().requiring(this).cancel();
         return new SequentialCommandGroup(
                 new InstantCommand(shootWaitCommand::cancel),
                 idle()
         );
-    }
+    }*/
 
     public void setShooterRpm(ShooterMode mode) {
         targetRPM = MathFunctions.clamp(mode.rpm, MIN_RPM, MAX_RPM);

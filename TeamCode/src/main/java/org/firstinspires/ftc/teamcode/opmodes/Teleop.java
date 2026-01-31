@@ -21,8 +21,6 @@ public class Teleop extends StealthOpMode {
     GamepadEx driveGamepad;
     GamepadEx operatorGamepad;
 
-    Follower follower;
-
     DriveSubsystem drive;
     BeltSubsystem beltSubsystem;
     IntakeSubsystem intakeSubsystem;
@@ -45,18 +43,19 @@ public class Teleop extends StealthOpMode {
         shooterSubsystem.preventShooting().schedule();
         shooterSubsystem.idle().schedule();
 
+        register(drive);
+
         drive.setDefaultCommand(drive.driveTeleop(
                 () -> driveGamepad.getLeftY(),
                 () -> driveGamepad.getLeftX(),
                 () -> driveGamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) - driveGamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()));
+                () -> driveGamepad.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).get()))  ;
 
         shooterSubsystem.resetVelocityReaders();
 
         // Set our alliance based off the teleop name
         drive.setAlliance(Alliance.get() == Alliance.BLUE);
 
-        register(drive);
 
         configureBindings();
     }
@@ -65,20 +64,20 @@ public class Teleop extends StealthOpMode {
         operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(() -> shooterSubsystem.setBlockerUp());
         operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> shooterSubsystem.setBlockerDown());
 
-        driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
+        //driveGamepad.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(drive.swapDriveMode());
 
         DoubleSupplier intakeSupplier = () -> ((driveGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER) ? 1 : 0) - (driveGamepad.getButton(GamepadKeys.Button.LEFT_BUMPER) ? 1 : 0));
         Trigger intake = new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)).or(new Trigger(() -> driveGamepad.getButton(GamepadKeys.Button.LEFT_BUMPER)));
         intake.whenActive(() -> intakeSubsystem.setPower(intakeSupplier.getAsDouble()));
         intake.whenInactive(() -> intakeSubsystem.stop());
 
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).whenPressed(shooterSubsystem.shootFar());
-        driveGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).whenPressed(shooterSubsystem.shootNear());
+        operatorGamepad.getGamepadButton((GamepadKeys.Button.DPAD_RIGHT)).toggleWhenActive(shooterSubsystem.shootFar(), shooterSubsystem.idle());
+        operatorGamepad.getGamepadButton((GamepadKeys.Button.DPAD_LEFT)).toggleWhenActive(shooterSubsystem.shootNear(), shooterSubsystem.idle());
 
         operatorGamepad.getGamepadButton((GamepadKeys.Button.X)).whenPressed(shooterSubsystem.cycle());
 
         //Shooter forceIdle
-        operatorGamepad.getGamepadButton(GamepadKeys.Button.A).whenActive(shooterSubsystem.forceIdle());
+        //operatorGamepad.getGamepadButton(GamepadKeys.Button.A).whenActive(shooterSubsystem.forceIdle());
 
         //Pre-spin up
         operatorGamepad.getGamepadButton(GamepadKeys.Button.B).whenActive(

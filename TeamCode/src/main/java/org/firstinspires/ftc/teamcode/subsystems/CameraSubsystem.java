@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.usablethings.AprilTagIds;
 import org.firstinspires.ftc.teamcode.usablethings.Pipeline;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.stealthrobotics.library.Alliance;
 import org.stealthrobotics.library.StealthSubsystem;
 
 import java.util.ArrayList;
@@ -79,7 +80,10 @@ public class CameraSubsystem extends StealthSubsystem{
         this.telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         limelight = hardwareMap.get(Limelight3A.class, NAME);
         limelight.start();
-        limelight.pipelineSwitch(APRILTAGS_TARGET_BOTH.id);
+
+        if (Alliance.get() == Alliance.BLUE) {
+            limelight.pipelineSwitch(APRILTAG_TARGET_BLUE.id);
+        } else limelight.pipelineSwitch(APRILTAG_TARGET_RED.id);
     }
 
     /**

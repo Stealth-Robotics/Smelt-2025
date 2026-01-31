@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
@@ -30,6 +31,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import static org.stealthrobotics.library.opmodes.StealthOpMode.telemetry;
 
@@ -45,8 +47,11 @@ public class DriveSubsystem extends StealthSubsystem {
     public static final double MAX_ROTATION_POWER = 0.90;
     public static final double MIN_ROTATION_POWER = 0.1;
 
+//    private static final PIDFCoefficients HEADING_COEFFICIENTS
+//            = new PIDFCoefficients(0.03, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
+
     private static final PIDFCoefficients HEADING_COEFFICIENTS
-            = new PIDFCoefficients(0.018, 0.0001, 0.001, .02); //0.018, 0.0001, 0.001, 0.02
+            = new PIDFCoefficients(0.02, 0.0001, 0.002, 0); //0.018, 0.0001, 0.001, 0.02
 
     private static final PIDFController headingController = new PIDFController(HEADING_COEFFICIENTS);
     public static double AUTO_AIM_TOLERANCE = 0.5;
@@ -82,7 +87,7 @@ public class DriveSubsystem extends StealthSubsystem {
     }
     public void setAlliance(boolean isAllianceBlue){
         if(isAllianceBlue){
-            offset = 0.3 ;
+            offset = 0;
         }
         else{
             offset = 4;
