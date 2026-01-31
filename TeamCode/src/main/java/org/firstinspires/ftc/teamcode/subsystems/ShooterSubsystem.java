@@ -62,7 +62,7 @@ public class ShooterSubsystem extends StealthSubsystem {
     private double targetRPM = 0;
 
     public enum ShooterMode {
-        FAR_SHOT(3300),//3700
+        FAR_SHOT(3400),//3700
         NEAR_SHOT(2650),
         IDLE(0),
         CYCLE(500),
